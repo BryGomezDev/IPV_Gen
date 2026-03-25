@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tipo         = $("#tipo");
     const tz           = $("#tz");
     const exe          = $("#exe");
+    const DEFAULT_EXE  = exe ? exe.value : "";
     const inicio       = $("#inicio");
     const fin          = $("#fin");
     const hstart       = $("#hstart");
@@ -206,10 +207,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const newText = lines.join("\n");
-            out.value = out.value ? out.value + "\n" + newText : newText;
+            saveToHistory(newText, 'ipv_hist_colombia');
+            out.value = out.value ? out.value + makeSeparator() + newText : newText;
+            updateCounter(document.getElementById('counter'), newText);
 
         } catch (err) {
-            alert(err.message || String(err));
+            showToast(err.message || String(err));
         }
     }
 
@@ -233,10 +236,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    const clearOutput = () => { out.value = ""; };
-
     btnGenerate.addEventListener("click", generate);
     btnCopy.addEventListener("click", copyOutput);
-    btnClear.addEventListener("click", clearOutput);
+
+    const btnExport = $("#btnExport");
+    if (btnExport && out) btnExport.addEventListener("click", () => {
+        exportTxt(out.value, `colombia_comandos_${new Date().toISOString().slice(0, 10)}.txt`);
+    });
+
+    initDateShortcuts();
+    initExeStorage(exe, DEFAULT_EXE, "ipv_exe_colombia");
+    initOutputPersistence(out, "ipv_out_colombia");
+    initOutputEditor(out);
+    initClearConfirm(btnClear, out);
+    initToolTracking();
+
+    initPresets(['periodicidad', 'tipo', 'inicio', 'fin', 'tz'], 'ipv_presets_colombia', document.querySelector('fieldset'));
+    const _saveForm = initFormPersistence(['inicio', 'fin', 'tz'], 'ipv_form_colombia');
+    btnGenerate.addEventListener('click', _saveForm);
+    initGenerationHistory(out, document.querySelector('.actions'), 'ipv_hist_colombia');
+    [inicio, fin].forEach(inp => inp?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); generate(); }
+    }));
 
 });

@@ -1,313 +1,285 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 
 <head>
-    <meta charset="utf-8" />
-    <title>FAQ – Generador de comandos</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Ajusta la ruta si tu CSS tiene otro nombre -->
-    <link rel="stylesheet" href="../assets/css/main.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FAQ – Generador de comandos</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 
 <body>
-    <div class="app">
-
-        <!-- Cabecera -->
-        <header class="app-header">
-            <div class="header-top"
-                style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-                <button class="btn secondary" type="button" onclick="location.href='../Generador De Comandos SCI.html'">
-                    ← Volver al índice
-                </button>
-                <div>
-                    <h1>FAQ – Generador de comandos</h1>
-                    <p class="subtitle">Guía rápida para entender y usar la herramienta</p>
-                </div>
-            </div>
-        </header>
-
-        <!-- Contenido principal -->
-        <main class="app-main" style="display:flex;justify-content:center;padding:1.5rem;">
-            <section class="panel" style="max-width:960px;width:100%;padding:1.5rem;">
-
-                <p>
-                    Este documento responde a las preguntas más frecuentes sobre el uso de la herramienta
-                    de generación de comandos para las distintas regulaciones (España, Portugal y Colombia).
-                </p>
-
-                <!-- Pregunta 1 -->
-                <details open>
-                    <summary><strong>1. ¿Qué es esta herramienta?</strong></summary>
-                    <p>
-                        Es una aplicación web local que te permite
-                        <strong>construir comandos automáticamente</strong> para ejecutar distintos procesos
-                        reguladores sin tener que escribirlos a mano.
-                    </p>
-                    <p>
-                        Solo eliges las opciones que necesites, pulsas <strong>Generar comando</strong>,
-                        y el panel de salida mostrará uno o varios comandos listos para copiar.
-                    </p>
-                </details>
-
-                <!-- Pregunta 2 -->
-                <details>
-                    <summary><strong>2. ¿Qué regulaciones soporta?</strong></summary>
-                    <p>Actualmente la herramienta está preparada para trabajar con:</p>
-                    <ul>
-                        <li>🇪🇸 <strong>España</strong></li>
-                        <li>🇵🇹 <strong>Portugal</strong></li>
-                        <li>🇨🇴 <strong>Colombia</strong></li>
-                    </ul>
-                    <p>
-                        Cada regulación tiene su propio fichero HTML con su lógica específica
-                        y se accede a ellos desde el <strong>index.html</strong>.
-                    </p>
-                </details>
-
-                <!-- Pregunta 3 -->
-                <details>
-                    <summary><strong>3. ¿Qué tipos de generación de comandos existen?</strong></summary>
-
-                    <h3>Daily (Diario)</h3>
-                    <p>
-                        Genera un comando por cada día dentro del rango indicado
-                        (fecha inicio → fecha fin). Es ideal para procesos que trabajan con días completos.
-                    </p>
-
-                    <h3>Monthly (Mensual)</h3>
-                    <p>
-                        Genera un comando por mes, tomando como referencia siempre el día 1
-                        (por ejemplo, 2025-01-01, 2025-02-01…). Es útil para informes o procesos mensuales.
-                    </p>
-
-                    <h3>Horario (por horas)</h3>
-                    <p>
-                        Permite generar comandos para rangos de horas específicos.
-                        En la regulación de España se usan rangos dentro de 0–24. La herramienta valida
-                        que el rango horario tenga sentido antes de generar el comando.
-                    </p>
-                    <p>
-                        Además, en este modo se activa la selección de <strong>GameType</strong> para la regulación
-                        española, concretamente para los ficheros <strong>JUC</strong>.
-                    </p>
-                </details>
-
-                <!-- Pregunta 4 -->
-                <details>
-                    <summary><strong>4. ¿Para qué sirve el apartado “Formato” al generar comandos?</strong></summary>
-
-                    <p>El control de <strong>Formato</strong> determina cómo se muestran los comandos en el panel de
-                        salida y está pensado específicamente para adaptarse a distintos métodos de ejecución dentro del
-                        entorno de trabajo.</p>
-
-                    <h3>🔹 1) Job Automático SCI - Multicomandos</h3>
-                    <p>
-                        Este formato envuelve cada comando entre comillas simples <code>' '</code> y añade una coma al
-                        final.
-                        Está pensado para usarlo cuando el comando va a formar parte de un <strong>array</strong> o
-                        una <strong>lista de comandos</strong> que será procesada por nuestro
-                        <strong>job automático de ejecución de comandos</strong>.
-                    </p>
-                    <p>
-                        Ejemplo:
-                    </p>
-                    <pre><code>'C:/ruta/app.exe --date 20250101',</code></pre>
-
-                    <h3>🔹 2) Job Automático SCI - Único comando</h3>
-                    <p>
-                        Similar al formato anterior, pero <strong>sin la coma final</strong>.
-                        Este modo se usa cuando el job automático espera un único comando dentro del listado.
-                        Es decir, cuando <strong>solo se va a ejecutar 1 comando</strong> en lugar de varios.
-                    </p>
-                    <p>Ejemplo:</p>
-                    <pre><code>'C:/ruta/app.exe --date 20250101'</code></pre>
-
-                    <h3>🔹 3) Para ejecutar por CMD</h3>
-                    <p>
-                        Genera los comandos tal cual deben ejecutarse en una ventana de <strong>CMD / PowerShell
-                            local</strong>.
-                        Es el formato más directo y limpio, pensado para copiar y pegar en consola durante pruebas o
-                        ejecuciones manuales.
-                    </p>
-                    <p>Ejemplo:</p>
-                    <pre><code>C:/ruta/app.exe --date 20250101</code></pre>
-
-                    <h3>📌 ¿Cuál debería usar?</h3>
-                    <ul>
-                        <li><strong>Automatización con múltiples comandos:</strong> Con comillas + coma.</li>
-                        <li><strong>Automatización con un único comando:</strong> Con comillas sin coma.</li>
-                        <li><strong>Ejecución manual en consola:</strong> Sin comillas ni coma.</li>
-                    </ul>
-
-                </details>
-
-                <!-- Pregunta 5 -->
-                <details>
-                    <summary><strong>5. ¿Para qué sirve cada campo del formulario?</strong></summary>
-
-                    <h3>Ruta ejecutable</h3>
-                    <p>
-                        Muestra la ruta del <code>.exe</code> que se va a utilizar en el comando.
-                        El campo es <strong>solo lectura</strong> para evitar modificaciones accidentales.
-                        La herramienta ya se encarga de generar el comando con la ruta correcta.
-                    </p>
-
-                    <h3>Fechas (inicio y fin)</h3>
-                    <ul>
-                        <li>En modo <strong>Daily</strong>, se genera un comando por cada día del rango.</li>
-                        <li>En modo <strong>Monthly</strong>, se genera un comando por cada mes del rango.</li>
-                        <li>
-                            En modos <strong>Horario</strong>, normalmente se utiliza
-                            un solo día combinado con un rango horario.
-                        </li>
-                    </ul>
-
-                    <h3>Selector UTC</h3>
-                    <p>
-                        Permite elegir la zona horaria que se aplicará en el comando (por ejemplo, +01:00 o +02:00).
-                        La herramienta puede ajustar automáticamente este valor según la fecha o dejar que lo
-                        selecciones
-                        manualmente.
-                    </p>
-
-                    <h3>Selector de GameType</h3>
-                    <p>
-                        Se muestra cuando la periodicidad es <strong>Horario</strong> y <strong>JUC</strong>.
-                        Permite filtrar por uno o varios tipos de juego.
-                    </p>
-                    <p>
-                        Si no seleccionas ningún GameType, el comportamiento por defecto suele ser
-                        “todos los tipos” (según la lógica de cada regulación).
-                    </p>
-                </details>
-
-                <!-- Pregunta 6 -->
-                <details>
-                    <summary><strong>6. ¿Para qué sirve cada botón?</strong></summary>
-
-                    <h3>Generar comando</h3>
-                    <p>
-                        Construye el comando (o comandos) según las opciones seleccionadas:
-                        fechas, periodicidad, rangos horarios, GameType, etc.
-                    </p>
-                    <p>
-                        Si el rango abarca varios días o meses, se generará un comando por cada día/mes
-                        correspondiente. Por defecto, los nuevos comandos se añaden al final del panel
-                        de salida sin borrar los anteriores.
-                    </p>
-
-                    <h3>Copiar</h3>
-                    <p>
-                        Copia el contenido completo del panel de salida al portapapeles.
-                    </p>
-
-                    <h3>Limpiar</h3>
-                    <p>
-                        Borra por completo el área de salida de comandos. No modifica las opciones del formulario,
-                        solo limpia el resultado generado.
-                    </p>
-
-                    <h3>Volver al índice</h3>
-                    <p>
-                        Te lleva de vuelta al <strong>menú principal</strong>, donde puedes escoger una nueva
-                        herramienta.
-                    </p>
-                </details>
-
-                <!-- Pregunta 7 -->
-                <details>
-                    <summary><strong>7. ¿Cómo se construyen los comandos internamente?</strong></summary>
-                    <p>
-                        Aunque el formato exacto puede variar entre regulaciones, la estructura general
-                        de un comando suele seguir este patrón:
-                    </p>
-                    <pre><code>&lt;ruta_del_exe&gt; --f &lt;frecuencia&gt; --date &lt;YYYYMMDD&gt; [opciones adicionales]</code></pre>
-                    <p>
-                        En las <em>opciones adicionales</em> se pueden incluir:
-                    </p>
-                    <ul>
-                        <li>Rangos horarios (en modos Horario/JUC).</li>
-                        <li>GameType (uno o varios tipos de juego).</li>
-                        <li>Zona horaria (UTC) u otros parámetros específicos de la regulación.</li>
-                    </ul>
-                    <p>
-                        Si seleccionas múltiples días, meses o GameTypes, la lógica de la herramienta
-                        genera automáticamente tantos comandos como sea necesario.
-                    </p>
-                </details>
-
-                <!-- Pregunta 8 -->
-                <details>
-                    <summary><strong>8. ¿Qué sucede si hay un error en los datos?</strong></summary>
-                    <p>
-                        Antes de generar los comandos, la herramienta ejecuta una función de validación.
-                        Si detecta algún problema, se lanza un mensaje de error claro, por ejemplo:
-                    </p>
-                    <ul>
-                        <li>«Indica fecha inicio y fin.»</li>
-                        <li>«Fin anterior a inicio.»</li>
-                        <li>«Rango horario inválido.»</li>
-                        <li>«Selecciona periodicidad.»</li>
-                    </ul>
-                    <p>
-                        Corrige el dato que se indica en el mensaje y vuelve a pulsar
-                        <strong>Generar comando</strong>.
-                    </p>
-                </details>
-
-                <!-- Pregunta 9 -->
-                <details>
-                    <summary><strong>9. ¿Se pueden acumular varios comandos en pantalla?</strong></summary>
-                    <p>
-                        Sí. Cada vez que pulsas <strong>Generar comando</strong>, los nuevos comandos
-                        se añaden al final del panel de salida, sin eliminar los anteriores.
-                    </p>
-                    <p>
-                        Esto permite preparar varios bloques de ejecuciones distintas y copiarlos todos
-                        de una sola vez. Para reiniciar la salida, utiliza el botón <strong>Limpiar</strong>.
-                    </p>
-                </details>
-
-                <!-- Pregunta 10 -->
-                <details>
-                    <summary><strong>10. ¿Necesito servidor web para usar la herramienta?</strong></summary>
-                    <p>
-                        No. La herramienta está pensada para ejecutarse en local. Solo necesitas:
-                    </p>
-                    <ul>
-                        <li><code>index.html</code> y los HTML de cada regulación.</li>
-                        <li>El fichero de estilos CSS común.</li>
-                        <li>Los ficheros JavaScript con la lógica de cada regulación.</li>
-                    </ul>
-                    <p>
-                        Basta con abrir el <strong>index.html</strong> con doble clic en tu navegador
-                        y desde ahí navegar a cada regulación o a esta página de FAQ.
-                    </p>
-                </details>
-
-                <!-- Pregunta 11 -->
-                <details>
-                    <summary><strong>11. ¿Se puede ampliar o modificar la herramienta?</strong></summary>
-                    <p>
-                        Sí. La estructura del proyecto está pensada para ser extensible:
-                    </p>
-                    <ul>
-                        <li>Añadir nuevas regulaciones con su propio HTML y JS.</li>
-                        <li>Agregar nuevos tipos de generación de comandos.</li>
-                        <li>Modificar validaciones, rutas de ejecutables, parámetros, etc.</li>
-                    </ul>
-                    <p>
-                        Siempre que mantengas el mismo estilo de CSS y la misma estructura básica,
-                        la experiencia de uso será consistente con el resto de páginas.
-                    </p>
-                </details>
-
-            </section>
-        </main>
-        <footer style="text-align:center;padding:1rem;opacity:0.6;font-size:0.9rem;">
-            Esta herramienta ha sido creada y diseñada por <strong>Brayan Arce Gómez</strong>.
-        </footer>
+  <header>
+    <h1>FAQ – Generador de comandos</h1>
+    <div class="header-top">
+      <a href="../index.html" class="btn secondary">← Volver al índice</a>
+      <p class="muted">Guía rápida para entender y usar la herramienta</p>
     </div>
+  </header>
+
+  <main class="faq">
+    <section>
+      <p>
+        Este documento responde a las preguntas más frecuentes sobre el uso de la herramienta
+        de generación de comandos para las distintas regulaciones (España, Portugal y Colombia).
+      </p>
+
+      <!-- Pregunta 1 -->
+      <details open>
+        <summary><strong>1. ¿Qué es esta herramienta?</strong></summary>
+        <p>
+          Es una aplicación web local que te permite
+          <strong>construir comandos automáticamente</strong> para ejecutar distintos procesos
+          reguladores sin tener que escribirlos a mano.
+        </p>
+        <p>
+          Solo eliges las opciones que necesites, pulsas <strong>Generar comando</strong>,
+          y el panel de salida mostrará uno o varios comandos listos para copiar.
+        </p>
+      </details>
+
+      <!-- Pregunta 2 -->
+      <details>
+        <summary><strong>2. ¿Qué regulaciones soporta?</strong></summary>
+        <p>Actualmente la herramienta está preparada para trabajar con:</p>
+        <ul>
+          <li>🇪🇸 <strong>España</strong></li>
+          <li>🇵🇹 <strong>Portugal</strong></li>
+          <li>🇨🇴 <strong>Colombia</strong></li>
+        </ul>
+        <p>
+          Cada regulación tiene su propio fichero HTML con su lógica específica
+          y se accede a ellos desde el <strong>index.html</strong>.
+        </p>
+      </details>
+
+      <!-- Pregunta 3 -->
+      <details>
+        <summary><strong>3. ¿Qué tipos de generación de comandos existen?</strong></summary>
+
+        <h3>Daily (Diario)</h3>
+        <p>
+          Genera un comando por cada día dentro del rango indicado
+          (fecha inicio → fecha fin). Es ideal para procesos que trabajan con días completos.
+        </p>
+
+        <h3>Monthly (Mensual)</h3>
+        <p>
+          Genera un comando por mes, tomando como referencia siempre el día 1
+          (por ejemplo, 2025-01-01, 2025-02-01…). Es útil para informes o procesos mensuales.
+        </p>
+
+        <h3>Horario (por horas)</h3>
+        <p>
+          Permite generar comandos para rangos de horas específicos.
+          En la regulación de España se usan rangos dentro de 0–24. La herramienta valida
+          que el rango horario tenga sentido antes de generar el comando.
+        </p>
+        <p>
+          Además, en este modo se activa la selección de <strong>GameType</strong> para la regulación
+          española, concretamente para los ficheros <strong>JUC</strong>.
+        </p>
+      </details>
+
+      <!-- Pregunta 4 -->
+      <details>
+        <summary><strong>4. ¿Para qué sirve el apartado "Formato" al generar comandos?</strong></summary>
+
+        <p>El control de <strong>Formato</strong> determina cómo se muestran los comandos en el panel de
+          salida y está pensado específicamente para adaptarse a distintos métodos de ejecución dentro del
+          entorno de trabajo.</p>
+
+        <h3>🔹 1) Job Automático SCI - Multicomandos</h3>
+        <p>
+          Este formato envuelve cada comando entre comillas simples <code>' '</code> y añade una coma al
+          final. Está pensado para usarlo cuando el comando va a formar parte de un <strong>array</strong> o
+          una <strong>lista de comandos</strong> que será procesada por nuestro
+          <strong>job automático de ejecución de comandos</strong>.
+        </p>
+        <p>Ejemplo:</p>
+        <pre><code>'C:/ruta/app.exe --date 20250101',</code></pre>
+
+        <h3>🔹 2) Job Automático SCI - Único comando</h3>
+        <p>
+          Similar al formato anterior, pero <strong>sin la coma final</strong>.
+          Este modo se usa cuando el job automático espera un único comando dentro del listado.
+          Es decir, cuando <strong>solo se va a ejecutar 1 comando</strong> en lugar de varios.
+        </p>
+        <p>Ejemplo:</p>
+        <pre><code>'C:/ruta/app.exe --date 20250101'</code></pre>
+
+        <h3>🔹 3) Para ejecutar por CMD</h3>
+        <p>
+          Genera los comandos tal cual deben ejecutarse en una ventana de <strong>CMD / PowerShell
+            local</strong>. Es el formato más directo y limpio, pensado para copiar y pegar en consola
+          durante pruebas o ejecuciones manuales.
+        </p>
+        <p>Ejemplo:</p>
+        <pre><code>C:/ruta/app.exe --date 20250101</code></pre>
+
+        <h3>📌 ¿Cuál debería usar?</h3>
+        <ul>
+          <li><strong>Automatización con múltiples comandos:</strong> Con comillas + coma.</li>
+          <li><strong>Automatización con un único comando:</strong> Con comillas sin coma.</li>
+          <li><strong>Ejecución manual en consola:</strong> Sin comillas ni coma.</li>
+        </ul>
+      </details>
+
+      <!-- Pregunta 5 -->
+      <details>
+        <summary><strong>5. ¿Para qué sirve cada campo del formulario?</strong></summary>
+
+        <h3>Ruta ejecutable</h3>
+        <p>
+          Muestra la ruta del <code>.exe</code> que se va a utilizar en el comando.
+          El campo es <strong>solo lectura</strong> para evitar modificaciones accidentales.
+          La herramienta ya se encarga de generar el comando con la ruta correcta.
+        </p>
+
+        <h3>Fechas (inicio y fin)</h3>
+        <ul>
+          <li>En modo <strong>Daily</strong>, se genera un comando por cada día del rango.</li>
+          <li>En modo <strong>Monthly</strong>, se genera un comando por cada mes del rango.</li>
+          <li>En modos <strong>Horario</strong>, normalmente se utiliza un solo día combinado con un rango horario.</li>
+        </ul>
+
+        <h3>Selector UTC</h3>
+        <p>
+          Permite elegir la zona horaria que se aplicará en el comando (por ejemplo, +01:00 o +02:00).
+          La herramienta puede ajustar automáticamente este valor según la fecha o dejar que lo
+          selecciones manualmente.
+        </p>
+
+        <h3>Selector de GameType</h3>
+        <p>
+          Se muestra cuando la periodicidad es <strong>Horario</strong> y <strong>JUC</strong>.
+          Permite filtrar por uno o varios tipos de juego.
+        </p>
+        <p>
+          Si no seleccionas ningún GameType, el comportamiento por defecto suele ser
+          "todos los tipos" (según la lógica de cada regulación).
+        </p>
+      </details>
+
+      <!-- Pregunta 6 -->
+      <details>
+        <summary><strong>6. ¿Para qué sirve cada botón?</strong></summary>
+
+        <h3>Generar comando</h3>
+        <p>
+          Construye el comando (o comandos) según las opciones seleccionadas:
+          fechas, periodicidad, rangos horarios, GameType, etc.
+        </p>
+        <p>
+          Si el rango abarca varios días o meses, se generará un comando por cada día/mes
+          correspondiente. Por defecto, los nuevos comandos se añaden al final del panel
+          de salida sin borrar los anteriores.
+        </p>
+
+        <h3>Copiar</h3>
+        <p>Copia el contenido completo del panel de salida al portapapeles.</p>
+
+        <h3>Limpiar</h3>
+        <p>
+          Borra por completo el área de salida de comandos. No modifica las opciones del formulario,
+          solo limpia el resultado generado.
+        </p>
+
+        <h3>Volver al índice</h3>
+        <p>
+          Te lleva de vuelta al <strong>menú principal</strong>, donde puedes escoger una nueva
+          herramienta.
+        </p>
+      </details>
+
+      <!-- Pregunta 7 -->
+      <details>
+        <summary><strong>7. ¿Cómo se construyen los comandos internamente?</strong></summary>
+        <p>
+          Aunque el formato exacto puede variar entre regulaciones, la estructura general
+          de un comando suele seguir este patrón:
+        </p>
+        <pre><code>&lt;ruta_del_exe&gt; --f &lt;frecuencia&gt; --date &lt;YYYYMMDD&gt; [opciones adicionales]</code></pre>
+        <p>En las <em>opciones adicionales</em> se pueden incluir:</p>
+        <ul>
+          <li>Rangos horarios (en modos Horario/JUC).</li>
+          <li>GameType (uno o varios tipos de juego).</li>
+          <li>Zona horaria (UTC) u otros parámetros específicos de la regulación.</li>
+        </ul>
+        <p>
+          Si seleccionas múltiples días, meses o GameTypes, la lógica de la herramienta
+          genera automáticamente tantos comandos como sea necesario.
+        </p>
+      </details>
+
+      <!-- Pregunta 8 -->
+      <details>
+        <summary><strong>8. ¿Qué sucede si hay un error en los datos?</strong></summary>
+        <p>
+          Antes de generar los comandos, la herramienta ejecuta una función de validación.
+          Si detecta algún problema, se lanza un mensaje de error claro, por ejemplo:
+        </p>
+        <ul>
+          <li>«Indica fecha inicio y fin.»</li>
+          <li>«Fin anterior a inicio.»</li>
+          <li>«Rango horario inválido.»</li>
+          <li>«Selecciona periodicidad.»</li>
+        </ul>
+        <p>
+          Corrige el dato que se indica en el mensaje y vuelve a pulsar
+          <strong>Generar comando</strong>.
+        </p>
+      </details>
+
+      <!-- Pregunta 9 -->
+      <details>
+        <summary><strong>9. ¿Se pueden acumular varios comandos en pantalla?</strong></summary>
+        <p>
+          Sí. Cada vez que pulsas <strong>Generar comando</strong>, los nuevos comandos
+          se añaden al final del panel de salida, sin eliminar los anteriores.
+        </p>
+        <p>
+          Esto permite preparar varios bloques de ejecuciones distintas y copiarlos todos
+          de una sola vez. Para reiniciar la salida, utiliza el botón <strong>Limpiar</strong>.
+        </p>
+      </details>
+
+      <!-- Pregunta 10 -->
+      <details>
+        <summary><strong>10. ¿Necesito servidor web para usar la herramienta?</strong></summary>
+        <p>No. La herramienta está pensada para ejecutarse en local. Solo necesitas:</p>
+        <ul>
+          <li><code>index.html</code> y los HTML de cada regulación.</li>
+          <li>El fichero de estilos CSS común.</li>
+          <li>Los ficheros JavaScript con la lógica de cada regulación.</li>
+        </ul>
+        <p>
+          Basta con abrir el <strong>index.html</strong> con doble clic en tu navegador
+          y desde ahí navegar a cada regulación o a esta página de FAQ.
+        </p>
+      </details>
+
+      <!-- Pregunta 11 -->
+      <details>
+        <summary><strong>11. ¿Se puede ampliar o modificar la herramienta?</strong></summary>
+        <p>Sí. La estructura del proyecto está pensada para ser extensible:</p>
+        <ul>
+          <li>Añadir nuevas regulaciones con su propio HTML y JS.</li>
+          <li>Agregar nuevos tipos de generación de comandos.</li>
+          <li>Modificar validaciones, rutas de ejecutables, parámetros, etc.</li>
+        </ul>
+        <p>
+          Siempre que mantengas el mismo estilo de CSS y la misma estructura básica,
+          la experiencia de uso será consistente con el resto de páginas.
+        </p>
+      </details>
+    </section>
+
+    <footer style="text-align:center; padding: 1rem 0; opacity: 0.6; font-size: 0.9rem;">
+      Esta herramienta ha sido creada y diseñada por <strong>Brayan Arce Gómez</strong>.
+    </footer>
+  </main>
 </body>
 
 </html>

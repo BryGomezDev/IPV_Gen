@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const periodicidad = document.getElementById("periodicidad");
     const exe = document.getElementById("exe");
+    const DEFAULT_EXE = exe ? exe.value : "";
     const inicio = document.getElementById("inicio");
     const fin = document.getElementById("fin");
     const comillas = document.getElementById("comillas");
@@ -113,11 +114,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const formatted = applyFormat(cmds);
 
             if (formatted.trim()) {
-                // Si ya hay texto, añadimos un salto de línea antes
-                output.value += (output.value ? "\n" : "") + formatted;
+                saveToHistory(formatted, 'ipv_hist_migrationchecker');
+                output.value += (output.value ? makeSeparator() : "") + formatted;
+                updateCounter(document.getElementById('counter'), formatted);
             }
         } catch (err) {
-            alert(err.message || err);
+            showToast(err.message || String(err));
         }
     });
 
@@ -127,13 +129,28 @@ document.addEventListener("DOMContentLoaded", () => {
             await navigator.clipboard.writeText(output.value);
             copyMsg.style.display = "inline";
             setTimeout(() => (copyMsg.style.display = "none"), 1500);
-        } catch (err) {
-            alert("No se pudo copiar al portapapeles.");
+        } catch {
+            showToast("No se pudo copiar al portapapeles.");
         }
     });
 
-    btnClear.addEventListener("click", () => {
-        output.value = "";
-        copyMsg.style.display = "none";
+    const btnExport = document.getElementById("btnExport");
+    if (btnExport) btnExport.addEventListener("click", () => {
+        exportTxt(output.value, `migrationchecker_comandos_${new Date().toISOString().slice(0, 10)}.txt`);
     });
+
+    initDateShortcuts();
+    initExeStorage(exe, DEFAULT_EXE, "ipv_exe_migrationchecker");
+    initOutputPersistence(output, "ipv_out_migrationchecker");
+    initOutputEditor(output);
+    initClearConfirm(btnClear, output, () => { copyMsg.style.display = "none"; });
+    initToolTracking();
+
+    initPresets(['periodicidad', 'inicio', 'fin'], 'ipv_presets_migrationchecker', document.querySelector('fieldset'));
+    const _saveForm = initFormPersistence(['inicio', 'fin', 'periodicidad'], 'ipv_form_migrationchecker');
+    btnGenerate.addEventListener('click', _saveForm);
+    initGenerationHistory(output, document.querySelector('.actions'), 'ipv_hist_migrationchecker');
+    [inicio, fin].forEach(inp => inp?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); btnGenerate.click(); }
+    }));
 });

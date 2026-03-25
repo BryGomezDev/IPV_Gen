@@ -8,7 +8,8 @@ const $ = (s) => document.querySelector(s);
 
 // ===== Referencias (algunas pueden no existir y el código lo contempla) =====
 const periodicidad = $("#periodicidad"); // DAILY | MONTHLY
-const exe = $("#exe");           // ruta ejecutable (readonly)
+const exe = $("#exe");           // ruta ejecutable
+const DEFAULT_EXE = exe ? exe.value : "";
 const inicio = $("#inicio");        // fecha inicio (type=date)
 const fin = $("#fin");           // fecha fin (type=date)
 const formato = $("#comillas");      // formato salida ('comando', ... / raw)
@@ -295,13 +296,13 @@ const generate = () => {
         const newText = buildOutputText();
 
         if (newText?.trim()) {
-            // Si ya hay contenido, añadimos salto de línea + nuevos comandos
-            out.value += (out.value ? "\n" : "") + newText;
+            saveToHistory(newText, 'ipv_hist_reportanalyzer_' + (isPortugal ? 'pt' : 'es'));
+            out.value += (out.value ? makeSeparator() : "") + newText;
         }
 
         if (typeof toggleMenu === "function") toggleMenu(false);
     } catch (err) {
-        alert(err.message);
+        showToast(err.message || String(err));
     }
 };
 
@@ -326,12 +327,9 @@ async function copyOutput() {
     }
 }
 
-function clearOutput() { out.value = ""; }
-
 // ===== Listeners =====
 btnGenerate?.addEventListener("click", generate);
 btnCopy?.addEventListener("click", copyOutput);
-btnClear?.addEventListener("click", clearOutput);
 
 // Enter en inputs de fecha => generar
 [inicio, fin].forEach(inp => {
@@ -339,3 +337,20 @@ btnClear?.addEventListener("click", clearOutput);
         if (e.key === "Enter") { e.preventDefault(); generate(); }
     });
 });
+
+const btnExport = $("#btnExport");
+if (btnExport && out) btnExport.addEventListener("click", () => {
+    exportTxt(out.value, `reportanalyzer_comandos_${new Date().toISOString().slice(0, 10)}.txt`);
+});
+
+initDateShortcuts();
+initExeStorage(exe, DEFAULT_EXE, "ipv_exe_reportanalyzer_" + (isPortugal ? "pt" : "es"));
+initOutputPersistence(out, "ipv_out_reportanalyzer_" + (isPortugal ? "pt" : "es"));
+initOutputEditor(out);
+initClearConfirm(btnClear, out);
+initToolTracking();
+
+initPresets(['periodicidad', 'inicio', 'fin'], 'ipv_presets_reportanalyzer_' + (isPortugal ? 'pt' : 'es'), document.querySelector('fieldset'));
+const _saveForm = initFormPersistence(['inicio', 'fin', 'periodicidad'], 'ipv_form_reportanalyzer_' + (isPortugal ? 'pt' : 'es'));
+btnGenerate?.addEventListener('click', _saveForm);
+initGenerationHistory(out, document.querySelector('.actions'), 'ipv_hist_reportanalyzer_' + (isPortugal ? 'pt' : 'es'));

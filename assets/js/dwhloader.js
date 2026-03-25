@@ -7,6 +7,7 @@ const $ = (s) => document.querySelector(s);
 // ===== Referencias a elementos =====
 const periodicidad = $("#periodicidad");
 const exe          = $("#exe");
+const DEFAULT_EXE  = exe ? exe.value : "";
 const inicio       = $("#inicio");
 const fin          = $("#fin");
 const formato      = $("#comillas");
@@ -137,11 +138,12 @@ const generate = () => {
     try {
         const newText = buildOutputText();
         if (newText?.trim()) {
-            out.value += (out.value ? "\n" : "") + newText;
+            saveToHistory(newText, 'ipv_hist_dwhloader');
+            out.value += (out.value ? makeSeparator() : "") + newText;
         }
         if (typeof toggleMenu === "function") toggleMenu(false);
     } catch (err) {
-        alert(err.message);
+        showToast(err.message || String(err));
     }
 };
 
@@ -163,8 +165,6 @@ const copyOutput = async () => {
         document.execCommand("copy");
     }
 };
-
-const clearOutput = () => { out.value = ""; };
 
 // ===== Custom: checkboxes tipo =====
 function getTipoCheckboxes() {
@@ -198,7 +198,23 @@ function toggleMenu(open) {
 // ===== Listeners =====
 btnGenerate?.addEventListener("click", generate);
 btnCopy?.addEventListener("click", copyOutput);
-btnClear?.addEventListener("click", clearOutput);
+
+const btnExport = $("#btnExport");
+if (btnExport && out) btnExport.addEventListener("click", () => {
+    exportTxt(out.value, `dwhloader_comandos_${new Date().toISOString().slice(0, 10)}.txt`);
+});
+
+initDateShortcuts();
+initExeStorage(exe, DEFAULT_EXE, "ipv_exe_dwhloader");
+initOutputPersistence(out, "ipv_out_dwhloader");
+initOutputEditor(out);
+initClearConfirm(btnClear, out);
+initToolTracking();
+
+initPresets(['inicio', 'fin'], 'ipv_presets_dwhloader', document.querySelector('fieldset'));
+const _saveForm = initFormPersistence(['inicio', 'fin'], 'ipv_form_dwhloader');
+btnGenerate?.addEventListener('click', _saveForm);
+initGenerationHistory(out, document.querySelector('.actions'), 'ipv_hist_dwhloader');
 
 [inicio, fin].forEach((inp) =>
     inp?.addEventListener("keydown", (e) => {

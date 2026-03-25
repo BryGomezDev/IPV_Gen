@@ -6,6 +6,7 @@
     const fin = document.querySelector('#fin');
     const tzSelect = document.querySelector('#tz');
     const exe = document.querySelector('#exe');
+    const DEFAULT_EXE = exe ? exe.value : "";
     const out = document.querySelector('#output');
     const generateBtn = document.querySelector('#btnGenerate');
     const formatoSelect = document.querySelector('#comillas');
@@ -256,13 +257,15 @@
             const textToAppend = formatCommands(commands);
 
             if (out) {
+                saveToHistory(textToAppend, 'ipv_hist_pde');
                 out.value = out.value
-                    ? out.value + '\n' + textToAppend
+                    ? out.value + makeSeparator() + textToAppend
                     : textToAppend;
+                updateCounter(document.getElementById('counter'), textToAppend);
             }
 
         } catch (err) {
-            alert(err.message || err);
+            showToast(err.message || String(err));
         }
     }
 
@@ -313,10 +316,6 @@
         }
     }
 
-    function clearOutput() {
-        if (!out) return;
-        out.value = "";
-    }
 
     // -------------------------------
     //  Listeners
@@ -373,12 +372,6 @@
         });
     }
 
-    if (clearBtn) {
-        clearBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            clearOutput();
-        });
-    }
 
 
     // Actualiza el resumen al marcar/desmarcar módulos dentro del modal
@@ -390,5 +383,25 @@
 
     // Inicializar resumen al cargar
     updateModulesSummary();
+
+    const btnExport = document.querySelector('#btnExport');
+    if (btnExport && out) btnExport.addEventListener('click', () => {
+        exportTxt(out.value, `pde_comandos_${new Date().toISOString().slice(0, 10)}.txt`);
+    });
+
+    initDateShortcuts();
+    initExeStorage(exe, DEFAULT_EXE, 'ipv_exe_pde');
+    initOutputPersistence(out, 'ipv_out_pde');
+    initOutputEditor(out);
+    initClearConfirm(clearBtn, out);
+    initToolTracking();
+
+    initPresets(['execMode', 'inicio', 'fin', 'tz'], 'ipv_presets_pde', document.querySelector('fieldset'));
+    const _saveForm = initFormPersistence(['inicio', 'fin', 'tz', 'execMode'], 'ipv_form_pde');
+    if (generateBtn) generateBtn.addEventListener('click', _saveForm);
+    if (out) initGenerationHistory(out, document.querySelector('.actions'), 'ipv_hist_pde');
+    [inicio, fin].forEach(inp => inp?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); buildCommands(); }
+    }));
 
 })();

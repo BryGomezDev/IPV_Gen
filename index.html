@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Índice — Generador de comandos</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script defer src="assets/js/utils.js"></script>
+  <script defer src="assets/js/index.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Índice — Generador de comandos</h1>
+    <div class="header-top">
+      <p class="muted">Elige la regulación para abrir su herramienta.</p>
+      <a href="faq/faq.html" class="btn secondary">Guía de Usuario</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="index-search">
+      <input type="text" id="indexSearch" placeholder="Buscar herramienta…" autocomplete="off" />
+    </div>
+
+    <section class="group" data-group>
+      <h2>Regulaciones</h2>
+      <div class="country-grid">
+        <div class="country-card" data-card>
+          <h3>España <span class="pill">DGOJ</span></h3>
+          <a href="herramientas/ReportGenerator/espana.html" class="button" data-tool="ReportGenerator España">ReportGenerator</a>
+          <a href="herramientas/ReportAnalyzer/reportanalyzerspain.html" class="button" data-tool="ReportAnalyzer España">ReportAnalyzer</a>
+        </div>
+        <div class="country-card" data-card>
+          <h3>Portugal <span class="pill">SRIJ</span></h3>
+          <a href="herramientas/ReportGenerator/portugal.html" class="button" data-tool="ReportGenerator Portugal">ReportGenerator</a>
+          <a href="herramientas/ReportAnalyzer/reportanalyzerportugal.html" class="button" data-tool="ReportAnalyzer Portugal">ReportAnalyzer</a>
+        </div>
+        <div class="country-card" data-card>
+          <h3>Colombia <span class="pill">Coljuegos</span></h3>
+          <a href="herramientas/ReportGenerator/colombia.html" class="button" data-tool="ReportGenerator Colombia">ReportGenerator</a>
+          <a href="herramientas/DWHLoader/dwhloader.html" class="button" data-tool="DWHLoader Colombia">DWHLoader</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="group" data-group>
+      <h2>Herramientas</h2>
+      <div class="country-card" data-card>
+        <a href="herramientas/PasDataExtractor/pde.html" class="button" data-tool="PasDataExtractor PDE extractor">PasDataExtractor</a>
+        <a href="herramientas/MigrationChecker/migrationchecker.html" class="button" data-tool="MigrationChecker migración">MigrationChecker</a>
+        <a href="herramientas/ICSMonthlyReports/icsmonthlyreports.html" class="button" data-tool="IcsMonthlyReports informes mensuales trimestre">IcsMonthlyReports</a>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

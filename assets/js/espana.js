@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tipo         = $("#tipo");
     const tz           = $("#tz");
     const exe          = $("#exe");
+    const DEFAULT_EXE  = exe ? exe.value : "";
     const inicio       = $("#inicio");
     const fin          = $("#fin");
     const hstart       = $("#hstart");
@@ -224,10 +225,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const newText = lines.join("\n");
-            out.value = out.value ? out.value + "\n" + newText : newText;
+            saveToHistory(newText, 'ipv_hist_espana');
+            out.value = out.value ? out.value + makeSeparator() + newText : newText;
+            updateCounter(document.getElementById('counter'), newText);
 
         } catch (err) {
-            alert(err.message || String(err));
+            showToast(err.message || String(err));
         }
     }
 
@@ -251,10 +254,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    const clearOutput = () => { out.value = ""; };
-
     if (btnGenerate) btnGenerate.addEventListener("click", generate);
     if (btnCopy && out) btnCopy.addEventListener("click", copyOutput);
-    if (btnClear && out) btnClear.addEventListener("click", clearOutput);
+
+    const btnExport = $("#btnExport");
+    if (btnExport && out) btnExport.addEventListener("click", () => {
+        exportTxt(out.value, `espana_comandos_${new Date().toISOString().slice(0, 10)}.txt`);
+    });
+
+    initDateShortcuts();
+    initExeStorage(exe, DEFAULT_EXE, "ipv_exe_espana");
+    initOutputPersistence(out, "ipv_out_espana");
+    initOutputEditor(out);
+    initClearConfirm(btnClear, out);
+    initToolTracking();
+
+    initPresets(['periodicidad', 'tipo', 'inicio', 'fin', 'tz'], 'ipv_presets_espana', document.querySelector('fieldset'));
+    const _saveForm = initFormPersistence(['inicio', 'fin', 'tz'], 'ipv_form_espana');
+    if (btnGenerate) btnGenerate.addEventListener('click', _saveForm);
+    initGenerationHistory(out, document.querySelector('.actions'), 'ipv_hist_espana');
+    [inicio, fin].forEach(inp => inp?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); generate(); }
+    }));
 
 });

@@ -1,0 +1,5 @@
+# Claude Code (configuración local del IDE)
+.claude/
+
+# Versiones antiguas archivadas
+Gen_Command_old/
