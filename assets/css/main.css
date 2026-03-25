@@ -1,0 +1,599 @@
+/* ====================== */
+/*   Diseño base global   */
+/* ====================== */
+:root {
+  --bg: #0b0d10;
+  --panel: #141820;
+  --soft: #1b2230;
+  --border: #26324f;
+  --border-2: #2d3b5e;
+  --text: #e6ebf3;
+  --muted: #aab3c2;
+  --accent: #4da3ff;
+  --accent-2: #3557e0;
+  --success: #7bd88f;
+  --ok: #7bd88f;
+
+  --radius: 12px;
+  --gap: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ====================== */
+/*        Layout          */
+/* ====================== */
+header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #0f1a2e, var(--bg));
+}
+
+header h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.back {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+main {
+  padding: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 960px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
+
+fieldset {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  background: var(--panel);
+}
+
+legend {
+  padding: 0 8px;
+  color: var(--muted);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+@media (max-width: 560px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 0;
+}
+
+.pill {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--text);
+  background: #232c3f;
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  border-radius: 999px;
+  margin-left: 6px;
+}
+
+/* ====================== */
+/*   Controles & Fixes    */
+/* ====================== */
+/* FIX de texto cortado en Chrome/Windows + alturas coherentes */
+input[type="text"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="number"],
+select {
+  width: 100%;
+  background: var(--soft);
+  color: var(--text);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  padding: 10px 12px;
+  height: 42px;
+  /* Altura explícita para evitar clipping */
+  line-height: 1.3;
+  /* Espacio vertical real para el texto   */
+  font-size: 16px;
+  /* Evita zoom raro en móviles/Chrome     */
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-clip: padding-box;
+}
+
+select {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+input[readonly] {
+  opacity: 0.85;
+}
+
+textarea {
+  width: 100%;
+  min-height: 420px;
+  background: var(--soft);
+  color: var(--text);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  padding: 10px 12px;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ====================== */
+/*        Botones         */
+/* ====================== */
+.actions {
+  display: flex;
+  gap: var(--gap);
+  flex-wrap: wrap;
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--border-2);
+  background: var(--soft);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 14px;
+  transition: .15s ease;
+}
+
+button:hover {
+  background: #1d2a49;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent-2);
+  color: #fff;
+}
+
+button.primary:hover {
+  background: #3c5df0;
+}
+
+button.ok {
+  background: var(--success);
+  border-color: #58c375;
+  color: #0b1220;
+}
+
+/* ====================== */
+/*   Tarjetas/genéricas   */
+/* ====================== */
+
+.group {
+  border: 1px solid var(--soft);
+  border-radius: 12px;
+  padding: 20px;
+  background: var(--panel);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin-top: 24px;
+}
+
+.group h2 {
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  color: #fff;
+  border-bottom: 1px solid var(--soft);
+  padding-bottom: 6px;
+}
+
+.country-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.country-card {
+  background: var(--soft);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.country-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.country-card h3 {
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.country-card p {
+  color: #ccc;
+  font-size: 0.9rem;
+  flex-grow: 1;
+}
+
+.country-card .button {
+  background: #5b82f6;
+  color: white;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 8px;
+  margin-top: 12px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.country-card .button:hover {
+  background: #7399ff;
+}
+
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+}
+
+.wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+}
+
+@media (max-width: 980px) {
+  .wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ====== Cards + títulos de sección coherentes ====== */
+.section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 960px) {
+  .section {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+}
+
+.card-subtitle {
+  color: var(--muted);
+  margin: 0 0 12px 0;
+}
+
+.card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.sep {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 0;
+}
+
+/* Botón ancho por defecto (como en tu captura) */
+button.block {
+  width: 100%;
+}
+
+/* Espacio entre "Formato" y botones */
+#comillas {
+  margin-bottom: 12px;
+}
+
+.multiselect {
+  position: relative;
+}
+
+.ms-trigger {
+  width: 100%;
+  padding: .65rem .9rem;
+  border-radius: .9rem;
+  border: 1px solid rgba(255, 255, 255, .15);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ms-trigger:after {
+  content: '▾';
+  float: right;
+  opacity: .7;
+}
+
+.ms-menu {
+  position: absolute;
+  z-index: 100;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  overflow: auto;
+  padding: .5rem .75rem;
+  border-radius: .9rem;
+  border: 1px solid rgba(255, 255, 255, .12);
+  background: var(--panel, #141820);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  display: none;
+}
+
+.ms-menu.open {
+  display: block;
+}
+
+.ms-menu label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .35rem 0;
+  user-select: none;
+}
+
+.ms-menu input[type="checkbox"] {
+  transform: scale(1.05);
+}
+
+/* Ocultar por defecto cuando tenga la clase .hidden */
+.hidden {
+  display: none;
+}
+
+/* Contenedor del modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  /* top:0; right:0; bottom:0; left:0 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  /* más alto que menús desplegables */
+}
+
+/* Fondo oscurecido */
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Caja principal del diálogo */
+.modal-dialog {
+  position: relative;
+  max-width: 900px;
+  max-height: 80vh;
+  width: 90%;
+  background: #141820;
+  /* adapta a tu tema */
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  z-index: 201;
+}
+
+/* Cabecera */
+.modal-header h2 {
+  margin: 0 0 .5rem 0;
+  font-size: 1.1rem;
+}
+
+/* Cuerpo con scroll si hace falta */
+.modal-body {
+  flex: 1;
+  overflow: auto;
+  padding: .5rem 0;
+}
+
+/* Botones superiores (seleccionar todo / quitar todo) */
+.modal-actions-top {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: .75rem;
+}
+
+/* Grid de grupos de prioridad */
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+/* Cada grupo */
+.modules-group {
+  border: 1px solid #2a3242;
+  border-radius: 6px;
+  padding: .5rem .75rem;
+}
+
+.modules-group legend {
+  padding: 0 .3rem;
+  font-weight: bold;
+  font-size: .9rem;
+  color: #f0c674;
+}
+
+.modules-group label {
+  display: block;
+  font-size: .85rem;
+  margin: .15rem 0;
+}
+
+/* Pie del modal */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+  margin-top: .5rem;
+}
+
+/* Resumen al lado del botón */
+.ms-summary {
+  margin-left: .5rem;
+  font-size: .8rem;
+  opacity: .8;
+}
+
+.modules-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* separación elegante */
+}
+
+#modulesSummary {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  white-space: nowrap;
+  /* evita saltos de línea */
+}
+
+.modules-wrapper {
+  display: flex;
+  flex-direction: column;
+  /* texto debajo */
+  align-items: flex-start;
+  /* alineado al botón */
+  gap: 6px;
+  /* separación elegante */
+}
+
+.modules-summary {
+  font-size: 0.80rem;
+  color: #bbb;
+  margin-left: 4px;
+  /* pequeño sangrado */
+  white-space: nowrap;
+  /* evita que parta en dos líneas */
+}
+
+/* ========================== */
+/* Modal inicial exclusivo    */
+/* ========================== */
+.info-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300; /* más alto que cualquier otro modal */
+}
+
+.info-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* overlay */
+  z-index: -1;
+}
+
+.info-modal-content {
+  position: relative;
+  max-width: 600px;
+  width: 90%;
+  background: var(--bg); /* sin transparencia */
+  color: var(--text);
+  padding: 2rem;
+  border-radius: 0; /* sin recuadro */
+  box-shadow: none;
+  text-align: left;
+}
+
+/* Botón cerrar */
+.info-modal-content button {
+  margin-top: 1.5rem;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.info-modal-content button:hover {
+  background: var(--accent-2);
+}

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Generador de Comandos — Colombia</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <script src="../../assets/js/colombia.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1 style="margin-bottom: 1rem;">Generador de Comandos — Colombia</h1>
+
+    <div class="header-top" style="display:flex;justify-content:space-between;align-items:center;">
+      <button class="btn secondary" onclick="location.href='../../Generador De Comandos SCI.html'">← Volver al índice</button>
+      <button class="btn secondary" onclick="location.href='../../faq/faq.html'">Guía de usuario</button>
+    </div>
+  </header>
+  <main>
+    <section>
+      <form id="form">
+        <fieldset>
+          <legend>Parámetros</legend>
+
+          <div class="form-row">
+            <div>
+              <label for="periodicidad">Periodicidad</label>
+              <select id="periodicidad">
+                <option value="Horario">Horario</option>
+                <option value="Diario">Diario</option>
+                <option value="Mensual">Mensual</option>
+              </select>
+            </div>
+            <div>
+              <label for="tipo">Tipo de fichero</label>
+              <select id="tipo"></select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label for="tz">Zona horaria</label>
+              <select id="tz">
+                <option value="-05:00" selected>-05:00</option>
+              </select>
+            </div>
+            <div>
+              <label for="exe">Ruta ejecutable</label>
+              <input id="exe" type="text"
+                value="C:\services\services_ics\ReportGeneratorManual\MT.Ics.SpainAndColombiaReportGenerator.exe"
+                readonly />
+              <!--<div class="muted">Ajusta si la ruta difiere en tu entorno.</div>-->
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label for="inicio">Fecha inicio</label>
+              <input id="inicio" type="date" />
+            </div>
+            <div>
+              <label for="fin">Fecha fin</label>
+              <input id="fin" type="date" />
+            </div>
+          </div>
+
+          <div id="horasBox" class="form-row">
+            <div>
+              <label for="hstart">Hora inicio (0, 8, 16)</label>
+              <select id="hstart">
+                <option>0</option>
+                <option>8</option>
+                <option>16</option>
+              </select>
+            </div>
+            <div>
+              <label for="hend">Hora fin (8, 16, 24)</label>
+              <select id="hend">
+                <option>8</option>
+                <option>16</option>
+                <option>24</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="gameBox" class="form-row hidden">
+            <div>
+              <label for="gametype">Game Type</label>
+              <select id="gametype"></select>
+            </div>
+          </div>
+          <div>
+            <label for="comillas">Formato</label>
+            <select id="comillas">
+              <option value="raw">Para ejecutar por CMD </option>
+              <option value="comma">Job Automático SCI - Multicomandos </option>
+              <option value="nocomma">Job Automático SCI - Único comando </option>
+            </select>
+          </div>
+          </div>
+
+          <!--<div class="form-row">
+            <div>
+              <label for="filename">Nombre del fichero</label>
+              <input id="filename" type="text" placeholder="ColombiaCJD_commands_Nov_2025_001.txt" />
+            </div>
+          </div>-->
+
+          <div class="actions">
+            <button type="button" class="primary" id="btnGenerate">Generar</button>
+            <button type="button" id="btnCopy">Copiar</button>
+            <span id="copyMsg" class="muted" style="display:none">¡Copiado!</span>
+            <button type="button" id="btnClear">Limpiar</button>
+          </div>
+        </fieldset>
+        <p class="muted" style="margin-top:12px">En <strong>Horario</strong> se generan bloques de 8 horas (0→8, 8→16,
+          16→24) según tu selección. En <strong>Mensual</strong> se usa el día 1 a 00:00.</p>
+      </form>
+    </section>
+
+    <section>
+      <fieldset>
+        <legend>Salida</legend>
+        <textarea id="output" spellcheck="false" placeholder="Aquí aparecerán los comandos..."></textarea>
+      </fieldset>
+    </section>
+  </main>
+</body>
+
+</html>

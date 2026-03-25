@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Comandos — ReportAnalyzer</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script defer src="../../assets/js/reportanalyzer.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1 style="margin-bottom: 1rem;">Generador de Comandos — ReportAnalyzer</h1>
+
+        <div class="header-top" style="display:flex;justify-content:space-between;align-items:center;">
+            <button class="btn secondary" onclick="location.href='../../Generador De Comandos SCI.html'">← Volver al índice</button>
+            <button class="btn secondary" onclick="location.href='../../faq/faq.html'">Guía de usuario</button>
+        </div>
+    </header>
+    <main>
+        <!-- Panel de Parámetros -->
+        <fieldset>
+            <legend>Parámetros</legend>
+
+            <!-- Periodicidad -->
+            <div class="form-row">
+                <label for="periodicidad">Periodicidad</label>
+                <select id="periodicidad">
+                    <option value="DAILY">DAILY</option>
+                    <option value="MONTHLY">MONTHLY</option>
+                </select>
+            </div>
+
+            <!-- Ruta ejecutable -->
+            <div class="form-row">
+                <label for="exe">Ruta ejecutable</label>
+                <input id="exe" type="text" value="C:\services\services_ics\SRIJReportyAnalyzer\SrijReportAnalyzer.exe"
+                    readonly />
+            </div>
+
+            <!-- Fechas -->
+            <div class="form-row">
+                <div>
+                    <label for="inicio">Fecha inicio</label>
+                    <input type="date" id="inicio">
+                </div>
+                <div>
+                    <label for="fin">Fecha fin</label>
+                    <input type="date" id="fin">
+                </div>
+            </div>
+
+            <div>
+                <label for="comillas">Formato</label>
+                <select id="comillas">
+                    <option value="raw">Para ejecutar por CMD </option>
+                    <option value="comma">Job Automático SCI - Multicomandos </option>
+                    <option value="nocomma">Job Automático SCI - Único comando </option>
+                </select>
+            </div>
+            </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="actions">
+                <button id="btnGenerate" class="primary">Generar</button>
+                <button id="btnCopy">Copiar</button>
+                <span id="copyMsg" class="muted" style="display:none;">¡Copiado!</span>
+                <button id="btnClear">Limpiar</button>
+            </div>
+
+            <p class="muted">En <strong>MONTHLY</strong> la fecha se fuerza al día 1 del mes. El comando usa
+                <code>--Date=YYYYMMDD</code> y <code>--frequency=DAILY|MONTHLY</code>.
+            </p>
+        </fieldset>
+
+        <!-- Panel de Salida -->
+        <fieldset>
+            <legend>Salida</legend>
+            <textarea id="output" placeholder="Aquí aparecerá el comando..." readonly></textarea>
+        </fieldset>
+    </main>
+</body>
+
+</html>

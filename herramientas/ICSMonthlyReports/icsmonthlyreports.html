@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Comandos — IcsMonthlyReports</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script defer src="../../assets/js/icsmonthlyreports.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1 style="margin-bottom: 1rem;">Generador de Comandos — IcsMonthlyReports</h1>
+
+        <div class="header-top" style="display:flex;justify-content:space-between;align-items:center;">
+            <button class="btn secondary" onclick="location.href='../../Generador De Comandos SCI.html'">← Volver al índice</button>
+            <button class="btn secondary" onclick="location.href='../../faq/faq.html'">Guía de usuario</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Panel de Parámetros -->
+        <fieldset>
+            <legend>Parámetros</legend>
+
+            <!-- Periodicidad -->
+            <div class="form-row">
+                <div>
+                    <label for="periodicidad">Periodicidad</label>
+                    <input id="periodicidad" type="text" value="Trimestrales" readonly />
+                </div>
+                <div>
+                    <label for="exe">Ruta ejecutable</label>
+                    <input id="exe" type="text"
+                        value='java -jar "C:\services\services_ics\IcsMonthlyReports\IcsMonthlyReports.jar"' readonly>
+                </div>
+            </div>
+
+            <!-- Legislación -->
+            <div class="form-row">
+                <div>
+                    <label for="legislation">Legislación</label>
+                    <select id="legislation">
+                        <option value="ES" selected>España</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <!-- Trimestre -->
+            <div class="form-row">
+                <div>
+                    <label for="quarter">Trimestre</label>
+                    <select id="quarter">
+                        <option value="Q1">Q1 (Enero – Marzo)</option>
+                        <option value="Q2">Q2 (Abril – Junio)</option>
+                        <option value="Q3">Q3 (Julio – Septiembre)</option>
+                        <option value="Q4">Q4 (Octubre – Diciembre)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="year">Año</label>
+                    <input id="year" type="number" value="2026" min="2000" max="2100">
+                </div>
+            </div>
+
+            <p class="muted">
+                Timezone aplicado automáticamente según legislación y trimestre
+            </p>
+
+            <!-- Selector de tipos -->
+            <div class="form-row">
+                <div>
+                    <label>Tipo de fichero</label>
+                    <div class="multiselect">
+                        <button type="button" id="tipoBtn" class="ms-trigger">Selecciona tipos…</button>
+                        <div id="tipoMenu" class="ms-menu" aria-hidden="true">
+                            <label><input type="checkbox" name="tipoOpt" value="BlockedAccounts">
+                                BlockedAccounts</label>
+                            <label><input type="checkbox" name="tipoOpt" value="ActivityData"> ActivityData</label>
+                            <label><input type="checkbox" name="tipoOpt" value="Regions"> Regions</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formato -->
+                <!-- <div class="form-row"> -->
+                <div>
+                    <label for="comillas">Formato</label>
+                    <select id="comillas">
+                        <option value="raw">Para ejecutar por CMD</option>
+                        <option value="comma">Job Automático SCI - Multicomandos</option>
+                        <option value="nocomma">Job Automático SCI - Único comando</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="actions">
+                <button id="btnGenerate" class="primary">Generar</button>
+                <button id="btnCopy">Copiar</button>
+                <span id="copyMsg" class="muted" style="display:none;">¡Copiado!</span>
+                <button id="btnClear">Limpiar</button>
+            </div>
+
+            <p class="muted">
+                Generaremos estos comandos para los <strong>TRIMESTRALES</strong>.
+                <strong>Nota:</strong> para el Q4, ejecútalo en el año siguiente. Ej.: seleccionando 2026-01-01 se
+                ejecuta Oct-Dic 2025.
+            </p>
+        </fieldset>
+
+        <!-- Panel de Salida -->
+        <fieldset>
+            <legend>Salida</legend>
+            <textarea id="output" placeholder="Aquí aparecerá el comando..." readonly></textarea>
+        </fieldset>
+    </main>
+</body>
+
+</html>

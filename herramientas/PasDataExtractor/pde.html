@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Comandos — PASDataExtractor</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script defer src="../../assets/js/pde.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1 style="margin-bottom: 1rem;">Generador de Comandos — PASDataExtractor</h1>
+
+        <div class="header-top" style="display:flex;justify-content:space-between;align-items:center;">
+            <button class="btn secondary" onclick="location.href='../../Generador De Comandos SCI.html'">← Volver al índice</button>
+            <button class="btn secondary" onclick="location.href='../../faq/faq.html'">Guía de usuario</button>
+        </div>
+    </header>
+    <main>
+        <!-- Panel de Parámetros -->
+        <fieldset>
+            <legend>Parámetros</legend>
+
+            <!-- Periodicidad -->
+            <div class="form-row">
+                <div>
+                    <label for="periodicidad">Periodicidad</label>
+                    <input id="periodicidad" type="text" value="Diaria" readonly />
+                </div>
+                <div>
+                    <label for="exe">Ruta ejecutable</label>
+                    <input id="exe" type="text"
+                        value='java -jar "C:\services\services_ics\PASDataExtractorManual\PASDataExtractor.jar"'
+                        readonly />
+                </div>
+            </div>
+
+            <!-- Fechas -->
+            <div class="form-row">
+                <div>
+                    <label for="UTC">UTC</label>
+                    <select id="tz">
+                        <option value="+01:00">+01:00 // España</option>
+                        <option value="+02:00" selected>+02:00 // España</option>
+                        <option value="+00:00">+00:00 // Portugal</option>
+                        <option value="-05:00">-05:00 // Colombia</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="execMode">Modo de ejecución (-e)</label>
+                    <select id="execMode">
+                        <option value="manual" selected>manual</option>
+                        <option value="automatic">automatic</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row"></div>
+            <div>
+                <label for="inicio">Fecha inicio</label>
+                <input type="date" id="inicio">
+            </div>
+            <div>
+                <label for="fin">Fecha fin</label>
+                <input type="date" id="fin">
+            </div>
+            </div>
+
+            <!-- Selector de módulos -->
+            <div class="form-row">
+                <div>
+                    <label>Módulos (-m)</label>
+                    <div class="multiselect">
+                        <div class="modules-wrapper">
+                            <button type="button" id="modulesBtn" class="ms-trigger">Seleccionar módulos…</button>
+                            <div id="modulesSummary" class="modules-summary"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label for="comillas">Formato</label>
+                <select id="comillas">
+                    <option value="raw">Para ejecutar por CMD </option>
+                    <option value="comma">Job Automático SCI - Multicomandos </option>
+                    <option value="nocomma">Job Automático SCI - Único comando </option>
+                </select>
+            </div>
+            </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="actions">
+                <button id="btnGenerate" class="primary">Generar</button>
+                <button id="btnCopy">Copiar</button>
+                <span id="copyMsg" class="muted" style="display:none;">¡Copiado!</span>
+                <button id="btnClear">Limpiar</button>
+            </div>
+
+            <p class="muted">En este caso, no añado el mensual, ya que NO es aconsejable lanzar mensuales en PDE.
+            </p>
+        </fieldset>
+
+        <!-- Panel de Salida -->
+        <fieldset>
+            <legend>Salida</legend>
+            <textarea id="output" placeholder="Aquí aparecerá el comando..." readonly></textarea>
+        </fieldset>
+    </main>
+
+    <!-- Modal de selección de módulos -->
+    <div id="modulesModal" class="modal hidden" aria-hidden="true">
+        <div class="modal-backdrop"></div>
+
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modulesTitle">
+            <div class="modal-header">
+                <h2 id="modulesTitle">Seleccionar módulos (-m)</h2>
+            </div>
+
+            <div class="modal-body">
+                <!-- Botones de ayuda -->
+                <div class="modal-actions-top">
+                    <button type="button" id="modulesSelectAll">Seleccionar todo</button>
+                    <button type="button" id="modulesSelectNone">Quitar todo</button>
+                </div>
+
+                <!-- Contenedor con scroll si hace falta -->
+                <div class="modules-grid">
+                    <!-- Prioridad 1 -->
+                    <fieldset class="modules-group">
+                        <legend>Prioridad 1</legend>
+                        <label><input type="checkbox" name="modules" value="User"> User</label>
+                        <label><input type="checkbox" name="modules" value="Tournament"> Tournament</label>
+                    </fieldset>
+
+                    <!-- Prioridad 2 -->
+                    <fieldset class="modules-group">
+                        <legend>Prioridad 2</legend>
+                        <label><input type="checkbox" name="modules" value="Alias"> Alias</label>
+                        <label><input type="checkbox" name="modules" value="LoginHistory"> LoginHistory
+                            (Colombia)</label>
+                        <label><input type="checkbox" name="modules" value="LoginHistoryDetail"> LoginHistoryDetail
+                            (ES/BR/PT)</label>
+                        <label><input type="checkbox" name="modules" value="AutoExclusion"> AutoExclusion</label>
+                        <label><input type="checkbox" name="modules" value="DepositLimits"> DepositLimits</label>
+                        <label><input type="checkbox" name="modules" value="UserAccount"> UserAccount</label>
+                        <label><input type="checkbox" name="modules" value="UserStatus"> UserStatus (ES/BR/CO)</label>
+                        <label><input type="checkbox" name="modules" value="SRIJUserStatus"> SRIJUserStatus (PT)</label>
+                        <label><input type="checkbox" name="modules" value="UserData"> UserData</label>
+                        <label><input type="checkbox" name="modules" value="UserDocumentVerification">
+                            UserDocumentVerification</label>
+                        <label><input type="checkbox" name="modules" value="BetEvent"> BetEvent</label>
+                        <label><input type="checkbox" name="modules" value="PendingVerification">
+                            PendingVerification</label>
+                        <label><input type="checkbox" name="modules" value="UserRegistrySession">
+                            UserRegistrySession</label>
+                    </fieldset>
+
+                    <!-- Prioridad 3 -->
+                    <fieldset class="modules-group">
+                        <legend>Prioridad 3</legend>
+                        <label><input type="checkbox" name="modules" value="CurrentDepositLimits">
+                            CurrentDepositLimits</label>
+                        <label><input type="checkbox" name="modules" value="Adjustments"> Adjustments</label>
+                        <label><input type="checkbox" name="modules" value="DepositWithdrawal">
+                            DepositWithdrawal</label>
+                        <label><input type="checkbox" name="modules" value="ParticipationBySession">
+                            ParticipationBySession</label>
+                        <label><input type="checkbox" name="modules" value="BetSystemParticipation">
+                            BetSystemParticipation</label>
+                        <label><input type="checkbox" name="modules" value="BetNotSystemParticipation">
+                            BetNotSystemParticipation</label>
+                        <label><input type="checkbox" name="modules" value="SlotsSession"> SlotSession</label>
+                    </fieldset>
+
+                    <!-- Prioridad 4 -->
+                    <fieldset class="modules-group">
+                        <legend>Prioridad 4</legend>
+                        <label><input type="checkbox" name="modules" value="Balances"> Balances</label>
+                        <label><input type="checkbox" name="modules" value="ParticipationUnits">
+                            ParticipationUnits</label>
+                        <label><input type="checkbox" name="modules" value="SlotsParticipationUnits">
+                            SlotsParticipationUnits</label>
+                        <label><input type="checkbox" name="modules" value="BetSystemParticipationUnits">
+                            BetSystemParticipationUnits</label>
+                        <label><input type="checkbox" name="modules" value="CancelUnits"> CancelUnits</label>
+                        <label><input type="checkbox" name="modules" value="BetSystemCancelUnits">
+                            BetSystemCancelUnits</label>
+                        <label><input type="checkbox" name="modules" value="Jackpot"> Jackpot</label>
+                    </fieldset>
+
+                    <!-- Prioridad 5 -->
+                    <fieldset class="modules-group">
+                        <legend>Prioridad 5</legend>
+                        <label><input type="checkbox" name="modules" value="JackpotUnit"> JackpotUnit</label>
+                        <label><input type="checkbox" name="modules" value="AutoExclusionRevocation">
+                            AutoExclusionRevocation</label>
+                        <label><input type="checkbox" name="modules" value="AutoExclusionExpired">
+                            AutoExclusionExpired</label>
+                        <label><input type="checkbox" name="modules" value="RoundsDetails"> RoundsDetails</label>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="modulesOk">Aceptar</button>
+                <button type="button" id="modulesCancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
