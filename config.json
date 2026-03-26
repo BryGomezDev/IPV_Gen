@@ -11,6 +11,13 @@
     "migrationchecker":       "C:\\services\\services_ics\\MigrationChecker\\MigrationChecker.exe",
     "pde":                    "java -jar \"C:\\services\\services_ics\\PASDataExtractorManual\\PASDataExtractor.jar\""
   },
+  "gameTypes": {
+    "espana": {
+      "horario": ["SES", "RAC"],
+      "mensual": ["AZA", "RLT", "BLJ", "AOC"]
+    },
+    "colombia": ["TRA", "BLJ", "RLT", "ADC", "CEV"]
+  },
   "fileTypes": {
     "espana": {
       "Diario":  ["CJT", "CJD", "RUD"],

@@ -19,26 +19,26 @@ const showInfoPopupOnce = () => {
 
     // Título
     const modalHeader = document.createElement("h2");
-    modalHeader.textContent = "Novedades — Release 2.2";
+    modalHeader.textContent = "Novedades — Release 3.0";
     modalContent.appendChild(modalHeader);
 
     // Mensaje
     const modalBody = document.createElement("div");
     modalBody.style.whiteSpace = "pre-line";
     modalBody.textContent = `
-Mejoras en todas las herramientas:
+Panel de administración centralizado:
 
-· El output se guarda automáticamente y se restaura al recargar la página.
-· El botón Limpiar ahora permite deshacer la acción durante 5 segundos.
-· Los separadores entre bloques incluyen la hora de generación (# --- HH:MM ---).
-· Contador de comandos generados en cada lote.
-· Historial de las últimas 10 generaciones por herramienta, accesible desde el botón "Historial".
-· Los campos de fecha y configuración se recuerdan entre sesiones.
-· Tecla Enter en los campos de fecha genera los comandos directamente.
+· Nueva página admin.html para configurar la aplicación sin tocar código.
+· Rutas de ejecutables editables directamente desde el panel.
+· Tipos de fichero por herramienta (periodicidades, listas planas, grupos PDE) editables desde el panel.
+· Game types de España (Horario/Mensual) y Colombia editables desde el panel.
+· Los cambios se persisten en config.json y afectan a todos los usuarios al instante.
+· Nuevo backend disponible: los tipos de fichero pueden ampliarse desde el servidor sin tocar el código fuente.
 
-Mejoras en el índice:
-· Buscador de herramientas en tiempo real.
-· Se resalta la última herramienta visitada.
+config.json como fuente de verdad:
+
+· Todas las herramientas leen su configuración de config.json al arrancar.
+· Los valores hardcodeados actúan solo como fallback si config.json no está disponible.
 `;
     modalContent.appendChild(modalBody);
 

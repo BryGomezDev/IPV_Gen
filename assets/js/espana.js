@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
         Mensual: ["CJT", "CJD", "RUT", "RUD", "OPT", "BOT"],
     };
 
-    const GAME_HORARIO = ["SES", "RAC"];                  // Horario + JUC
-    const GAME_MENSUAL = ["AZA", "RLT", "BLJ", "AOC"];   // Mensual + OPT | BOT
+    const GAME_HORARIO = window.IPV_CONFIG?.gameTypes?.espana?.horario || ["SES", "RAC"];
+    const GAME_MENSUAL = window.IPV_CONFIG?.gameTypes?.espana?.mensual || ["AZA", "RLT", "BLJ", "AOC"];
 
     // ===== Helper DOM =====
     const $ = (s) => document.querySelector(s);

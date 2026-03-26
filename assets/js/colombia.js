@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Los game types de Horario y Mensual-OPT comparten los mismos valores
-    const GAME_TYPES = ["TRA", "BLJ", "RLT", "ADC", "CEV"];
+    const GAME_TYPES = window.IPV_CONFIG?.gameTypes?.colombia || ["TRA", "BLJ", "RLT", "ADC", "CEV"];
 
     // ===== Helper DOM =====
     const $ = (s) => document.querySelector(s);

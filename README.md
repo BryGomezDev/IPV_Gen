@@ -63,6 +63,7 @@ Haz clic en el botón **"Herramientas de desarrollo"** (esquina inferior izquier
 | Tipos de fichero por periodicidad | ReportGenerator España / Portugal / Colombia |
 | Tipos de fichero (lista plana) | ReportAnalyzer España, DWHLoader, IcsMonthlyReports |
 | Módulos por grupo de prioridad | PasDataExtractor |
+| Game types | ReportGenerator España (Horario / Mensual) y Colombia |
 
 ### Prioridad de configuración
 
@@ -167,16 +168,37 @@ const TIPOS = window.IPV_CONFIG?.fileTypes?.espana || {
 
 Edita el objeto del fallback para cambiar los defaults del código.
 
-### Tipos de GameType (solo Horario/Mensual en España)
+### Tipos de GameType (España y Colombia)
 
-Si el tipo nuevo lleva un GameType asociado, también hay dos arrays justo debajo en `espana.js`:
+> **Forma recomendada (Release 3.0+):** usa el panel de administración (`admin.html`), sección **"Game types por herramienta"**.
 
+Si prefieres editarlo en código (como fallback hardcodeado):
+
+**España** — `assets/js/espana.js`:
 ```js
-const GAME_HORARIO = ["SES", "RAC"];                  // GameTypes para Horario + JUC
-const GAME_MENSUAL = ["AZA", "RLT", "BLJ", "AOC"];   // GameTypes para Mensual + OPT | BOT
+// Fallback hardcodeado (se usa si config.json no tiene gameTypes.espana)
+const GAME_HORARIO = window.IPV_CONFIG?.gameTypes?.espana?.horario || ["SES", "RAC"];
+const GAME_MENSUAL = window.IPV_CONFIG?.gameTypes?.espana?.mensual || ["AZA", "RLT", "BLJ", "AOC"];
 ```
 
-Añade el GameType nuevo al array que corresponda. _(Los GameTypes no son configurables desde el panel — requieren edición de código.)_
+**Colombia** — `assets/js/colombia.js`:
+```js
+// Fallback hardcodeado (se usa si config.json no tiene gameTypes.colombia)
+const GAME_TYPES = window.IPV_CONFIG?.gameTypes?.colombia || ["TRA", "BLJ", "RLT", "ADC", "CEV"];
+```
+
+Los game types de España se dividen en dos grupos: `horario` (para Horario + JUC) y `mensual` (para Mensual + OPT/BOT). Colombia usa un único array compartido para Horario y Mensual-OPT.
+
+En `config.json` la estructura es:
+```json
+"gameTypes": {
+  "espana": {
+    "horario": ["SES", "RAC"],
+    "mensual": ["AZA", "RLT", "BLJ", "AOC"]
+  },
+  "colombia": ["TRA", "BLJ", "RLT", "ADC", "CEV"]
+}
+```
 
 ---
 
@@ -464,7 +486,7 @@ Cada herramienta tiene su propio patrón. Localiza la función de construcción 
 | Cambiar ruta ejecutable por defecto | Panel admin → Rutas ejecutables | HTML de la herramienta (atributo `value` del `#exe`) |
 | Añadir/quitar módulo PasDataExtractor | Panel admin → Módulos PDE | `assets/js/pde.js` (array `MODULE_GROUPS`) |
 | Añadir legislación IcsMonthlyReports | Solo en código | `icsmonthlyreports.html` (option) + `icsmonthlyreports.js` (`LEGISLATION_CONFIG`) |
-| Añadir GameType España/Colombia | Solo en código | `assets/js/espana.js` / `colombia.js` (`GAME_HORARIO`, `GAME_MENSUAL`) |
+| Añadir/quitar GameType España/Colombia | Panel admin → Game types | `assets/js/espana.js` / `colombia.js` (fallback `GAME_HORARIO`, `GAME_MENSUAL`, `GAME_TYPES`) |
 | Renombrar herramienta | Solo en código | HTML + `index.html` + (opcional) claves en JS |
 | Cambiar formato del comando | Solo en código | JS de la herramienta (`buildOutputText` o `buildCommands`) |
 | Nueva herramienta | Solo en código | Nueva carpeta + HTML + JS + entrada en `index.html` |

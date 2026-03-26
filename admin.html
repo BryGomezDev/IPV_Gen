@@ -225,6 +225,12 @@
     <div id="typesContainer"><!-- JS --></div>
   </div>
 
+  <!-- ── Game types ── -->
+  <div class="admin-section">
+    <h2>Game types por herramienta</h2>
+    <div id="gameTypesContainer"><!-- JS --></div>
+  </div>
+
 </div>
 
 <script>
@@ -304,6 +310,7 @@ function renderPanel() {
   document.getElementById('adminPanel').classList.remove('hidden');
   renderExeGrid();
   renderTypes();
+  renderGameTypes();
 }
 
 // ─── Rutas ejecutables ────────────────────────────────────
@@ -316,6 +323,77 @@ function renderExeGrid() {
              value="${esc(cfg.executables?.[t.key] ?? '')}"
              spellcheck="false">
     </div>`).join('');
+}
+
+// ─── Game types ───────────────────────────────────────────
+function renderGameTypes() {
+  const container = document.getElementById('gameTypesContainer');
+  const gt = cfg.gameTypes ?? {};
+  let html = '';
+
+  // España: horario + mensual
+  const espana = gt.espana ?? {};
+  html += `<div class="tool-block"><h3>ReportGenerator — España</h3>`;
+  for (const sub of ['horario', 'mensual']) {
+    const tags = Array.isArray(espana[sub]) ? espana[sub] : [];
+    html += `
+      <div class="perio-row">
+        <div class="perio-label">${esc(sub.charAt(0).toUpperCase() + sub.slice(1))}</div>
+        <div>
+          <div class="tag-editor"
+               data-gt-tool="espana"
+               data-gt-sub="${esc(sub)}">${renderTags(tags)}</div>
+          <div class="tag-add-row">
+            <input type="text" placeholder="Nuevo game type…">
+            <button type="button" class="btn-add btn secondary">+&nbsp;Añadir</button>
+          </div>
+        </div>
+      </div>`;
+  }
+  html += `</div>`;
+
+  // Colombia: lista plana
+  const colTags = Array.isArray(gt.colombia) ? gt.colombia : [];
+  html += `
+    <div class="tool-block">
+      <h3>ReportGenerator — Colombia</h3>
+      <div class="tag-editor" data-gt-tool="colombia">${renderTags(colTags)}</div>
+      <div class="tag-add-row">
+        <input type="text" placeholder="Nuevo game type…">
+        <button type="button" class="btn-add btn secondary">+&nbsp;Añadir</button>
+      </div>
+    </div>`;
+
+  container.innerHTML = html;
+  bindGameTypeEvents();
+}
+
+function bindGameTypeEvents() {
+  const container = document.getElementById('gameTypesContainer');
+
+  container.addEventListener('click', e => {
+    if (e.target.classList.contains('tag-x')) {
+      e.target.closest('.tag').remove();
+    }
+  });
+
+  container.addEventListener('click', e => {
+    if (!e.target.classList.contains('btn-add')) return;
+    const row    = e.target.closest('.tag-add-row');
+    const input  = row.querySelector('input');
+    const editor = row.previousElementSibling;
+    if (editor && editor.classList.contains('tag-editor')) addTag(editor, input);
+  });
+
+  container.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const input = e.target;
+    if (!input.closest('.tag-add-row')) return;
+    e.preventDefault();
+    const row    = input.closest('.tag-add-row');
+    const editor = row.previousElementSibling;
+    if (editor && editor.classList.contains('tag-editor')) addTag(editor, input);
+  });
 }
 
 // ─── Tipos de fichero ─────────────────────────────────────
@@ -513,6 +591,18 @@ function collectConfig() {
       pdeEditor.querySelectorAll('.tag-editor')
     ).map(ed => getTagValues(ed));
   }
+
+  // Game types — España
+  if (!out.gameTypes) out.gameTypes = {};
+  if (!out.gameTypes.espana) out.gameTypes.espana = {};
+  for (const sub of ['horario', 'mensual']) {
+    const ed = document.querySelector(`.tag-editor[data-gt-tool="espana"][data-gt-sub="${sub}"]`);
+    out.gameTypes.espana[sub] = ed ? getTagValues(ed) : [];
+  }
+
+  // Game types — Colombia
+  const edCol = document.querySelector('.tag-editor[data-gt-tool="colombia"]');
+  out.gameTypes.colombia = edCol ? getTagValues(edCol) : [];
 
   return out;
 }
