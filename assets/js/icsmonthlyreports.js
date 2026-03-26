@@ -1,3 +1,17 @@
+// ── Config override (config.json via panel de administración) ──
+(function applyIcsConfig() {
+    const cfg = window.IPV_CONFIG;
+    if (!cfg) return;
+    const exeEl = document.querySelector('#exe');
+    if (cfg.executables?.icsmonthlyreports && exeEl) exeEl.value = cfg.executables.icsmonthlyreports;
+    const menu = document.querySelector('#tipoMenu');
+    if (cfg.fileTypes?.icsmonthlyreports && menu) {
+        menu.innerHTML = cfg.fileTypes.icsmonthlyreports
+            .map(t => `<label><input type="checkbox" name="tipoOpt" value="${t}"> ${t}</label>`)
+            .join('');
+    }
+}());
+
 // Helpers
 const $ = s => document.querySelector(s);
 

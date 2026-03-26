@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // ===== Constantes de datos =====
-    const TIPOS = {
+    // Los valores por defecto pueden sobreescribirse desde config.json via el panel de administración.
+    const TIPOS = window.IPV_CONFIG?.fileTypes?.colombia || {
         Diario:  ["CJD", "RUT", "RUD"],
         Horario: ["JUD", "JUT"],
         Mensual: ["CJD", "RUT", "RUD", "OPT", "LIQ", "LEX", "SIPLAFT"],
@@ -18,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tipo         = $("#tipo");
     const tz           = $("#tz");
     const exe          = $("#exe");
+    if (window.IPV_CONFIG?.executables?.colombia && exe) exe.value = window.IPV_CONFIG.executables.colombia;
     const DEFAULT_EXE  = exe ? exe.value : "";
     const inicio       = $("#inicio");
     const fin          = $("#fin");

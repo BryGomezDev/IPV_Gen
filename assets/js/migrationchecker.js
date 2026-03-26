@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const periodicidad = document.getElementById("periodicidad");
     const exe = document.getElementById("exe");
+    if (window.IPV_CONFIG?.executables?.migrationchecker && exe) exe.value = window.IPV_CONFIG.executables.migrationchecker;
     const DEFAULT_EXE = exe ? exe.value : "";
     const inicio = document.getElementById("inicio");
     const fin = document.getElementById("fin");

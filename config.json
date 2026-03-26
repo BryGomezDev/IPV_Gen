@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "executables": {
+    "espana":                 "C:\\services\\services_ics\\ReportGeneratorManual\\MT.Ics.SpainAndColombiaReportGenerator.exe",
+    "portugal":               "portugal-reports-generator.jar",
+    "colombia":               "C:\\services\\services_ics\\ReportGeneratorManual\\MT.Ics.SpainAndColombiaReportGenerator.exe",
+    "reportanalyzer_spain":   "C:\\services\\services_ics\\ReportAnalyzer\\DGOJReportAnalyzer.exe",
+    "reportanalyzer_portugal":"C:\\services\\services_ics\\SRIJReportyAnalyzer\\SrijReportAnalyzer.exe",
+    "dwhloader":              "java -jar ColjuegosDWHLoader.jar -e manual",
+    "icsmonthlyreports":      "java -jar \"C:\\services\\services_ics\\IcsMonthlyReports\\IcsMonthlyReports.jar\"",
+    "migrationchecker":       "C:\\services\\services_ics\\MigrationChecker\\MigrationChecker.exe",
+    "pde":                    "java -jar \"C:\\services\\services_ics\\PASDataExtractorManual\\PASDataExtractor.jar\""
+  },
+  "fileTypes": {
+    "espana": {
+      "Diario":  ["CJT", "CJD", "RUD"],
+      "Horario": ["JUC"],
+      "Mensual": ["CJT", "CJD", "RUT", "RUD", "OPT", "BOT"]
+    },
+    "portugal": {
+      "Diario":  ["EXCL", "RESF"],
+      "Horario": ["AJOG", "JGDR", "SESS", "TRAN"]
+    },
+    "colombia": {
+      "Diario":  ["CJD", "RUT", "RUD"],
+      "Horario": ["JUD", "JUT"],
+      "Mensual": ["CJD", "RUT", "RUD", "OPT", "LIQ", "LEX", "SIPLAFT"]
+    },
+    "reportanalyzer_spain": ["ALL", "RUD", "CJD", "CJT", "SES", "CEV"],
+    "dwhloader":            ["player", "operatorIncomes"],
+    "icsmonthlyreports":    ["BlockedAccounts", "ActivityData", "Regions"],
+    "pde": [
+      ["User", "Tournament"],
+      ["Alias", "LoginHistory", "LoginHistoryDetail", "AutoExclusion", "DepositLimits", "UserAccount", "UserStatus", "SRIJUserStatus", "UserData", "UserDocumentVerification", "BetEvent", "PendingVerification", "UserRegistrySession"],
+      ["CurrentDepositLimits", "Adjustments", "DepositWithdrawal", "ParticipationBySession", "BetSystemParticipation", "BetNotSystemParticipation", "SlotsSession"],
+      ["Balances", "ParticipationUnits", "SlotsParticipationUnits", "BetSystemParticipationUnits", "CancelUnits", "BetSystemCancelUnits", "Jackpot"],
+      ["JackpotUnit", "AutoExclusionRevocation", "AutoExclusionExpired", "RoundsDetails"]
+    ]
+  }
+}

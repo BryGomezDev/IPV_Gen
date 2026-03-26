@@ -1,6 +1,20 @@
 // Detectar contexto
 const isPortugal = location.pathname.includes("reportanalyzerportugal.html");
 
+// ── Config override (config.json via panel de administración) ──
+(function applyDwhConfig() {
+    const cfg = window.IPV_CONFIG;
+    if (!cfg) return;
+    const exeEl = document.querySelector("#exe");
+    if (cfg.executables?.dwhloader && exeEl) exeEl.value = cfg.executables.dwhloader;
+    const menu = document.querySelector("#tipoMenu");
+    if (cfg.fileTypes?.dwhloader && menu) {
+        menu.innerHTML = cfg.fileTypes.dwhloader
+            .map(t => `<label><input type="checkbox" name="tipoOpt" value="${t}"> ${t}</label>`)
+            .join('');
+    }
+}());
+
 // ===== Helper DOM =====
 const $ = (s) => document.querySelector(s);
 

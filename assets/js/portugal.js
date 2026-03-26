@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // ===== Constantes de datos =====
-    const TIPOS = {
+    // Los valores por defecto pueden sobreescribirse desde config.json via el panel de administración.
+    const TIPOS = window.IPV_CONFIG?.fileTypes?.portugal || {
         Diario:  ["EXCL", "RESF"],
         Horario: ["AJOG", "JGDR", "SESS", "TRAN"],
     };
@@ -14,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tipo         = $("#tipo");
     const tz           = $("#tz");
     const jar          = $("#jar");
+    if (window.IPV_CONFIG?.executables?.portugal && jar) jar.value = window.IPV_CONFIG.executables.portugal;
     const DEFAULT_JAR  = jar ? jar.value : "";
     const inicio       = $("#inicio");
     const fin          = $("#fin");

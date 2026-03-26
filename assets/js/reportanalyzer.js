@@ -3,6 +3,24 @@
 // Detectar si estamos en el report de Portugal
 const isPortugal = window.location.pathname.includes("reportanalyzerportugal.html");
 
+// ── Config override (config.json via panel de administración) ──
+(function applyRaConfig() {
+    const cfg    = window.IPV_CONFIG;
+    if (!cfg) return;
+    const cfgKey = isPortugal ? 'reportanalyzer_portugal' : 'reportanalyzer_spain';
+    const exeEl  = document.querySelector('#exe');
+    if (cfg.executables?.[cfgKey] && exeEl) exeEl.value = cfg.executables[cfgKey];
+    // Solo España tiene checkboxes de tipo; Portugal no los usa
+    if (!isPortugal && cfg.fileTypes?.[cfgKey]) {
+        const menu = document.querySelector('#tipoMenu');
+        if (menu) {
+            menu.innerHTML = cfg.fileTypes[cfgKey]
+                .map(t => `<label><input type="checkbox" name="tipoOpt" value="${t}"> ${t}</label>`)
+                .join('');
+        }
+    }
+}());
+
 // ===== Helpers =====
 const $ = (s) => document.querySelector(s);
 

@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel de administración — IPV CommandWeb</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    /* ── Layout ───────────────────────────────────────────────────────── */
+    .admin-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    /* ── Login ────────────────────────────────────────────────────────── */
+    .login-card {
+      max-width: 380px;
+      margin: 80px auto 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+    }
+    .login-card h2 { margin: 0 0 8px; font-size: 1.15rem; }
+    .login-card .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 24px; }
+
+    /* ── Admin header ─────────────────────────────────────────────────── */
+    .admin-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .admin-topbar h1 { margin: 0; font-size: 1.25rem; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+    /* ── Sections ─────────────────────────────────────────────────────── */
+    .admin-section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .admin-section > h2 {
+      margin: 0 0 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+
+    /* ── Exe grid ─────────────────────────────────────────────────────── */
+    .exe-grid { display: flex; flex-direction: column; gap: 10px; }
+    .exe-row {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+    .exe-row label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: right;
+      padding-right: 4px;
+    }
+    .exe-row input { width: 100%; font-size: 0.82rem; font-family: monospace; }
+
+    /* ── Tool blocks ──────────────────────────────────────────────────── */
+    .tool-block {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .tool-block:last-child { border-bottom: none; padding-bottom: 0; }
+    .tool-block > h3 { margin: 0 0 14px; font-size: 0.92rem; }
+
+    /* ── Periodicity rows ─────────────────────────────────────────────── */
+    .perio-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 10px;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+    .perio-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding-top: 7px;
+      text-align: right;
+    }
+
+    /* ── Tag editor ───────────────────────────────────────────────────── */
+    .tag-editor {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 5px 7px;
+      min-height: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--soft);
+      align-items: center;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: var(--bg);
+      border: 1px solid var(--border-2);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 0.78rem;
+      font-family: ui-monospace, monospace;
+    }
+    .tag-x {
+      background: none;
+      border: none;
+      color: var(--muted-2);
+      cursor: pointer;
+      padding: 0 1px;
+      font-size: 0.85rem;
+      line-height: 1;
+      transition: color var(--t);
+    }
+    .tag-x:hover { color: var(--error); }
+
+    .tag-add-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 7px;
+      align-items: center;
+    }
+    .tag-add-row input {
+      max-width: 170px;
+      font-size: 0.82rem;
+      padding: 4px 8px;
+    }
+    .tag-add-row .btn-add {
+      font-size: 0.82rem;
+      padding: 4px 12px;
+    }
+
+    /* ── PDE groups ───────────────────────────────────────────────────── */
+    .pde-group { margin-bottom: 14px; }
+    .pde-group-lbl {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .btn-remove-group {
+      margin-left: auto;
+      font-size: 0.78rem;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--error);
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background var(--t);
+    }
+    .btn-remove-group:hover { background: rgba(240,106,106,.12); }
+
+    /* ── Status toast ─────────────────────────────────────────────────── */
+    #statusMsg {
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      transition: opacity 0.3s;
+    }
+    #statusMsg.ok    { color: var(--success); background: rgba(95,216,122,.08); border: 1px solid rgba(95,216,122,.25); }
+    #statusMsg.err   { color: var(--error);   background: rgba(240,106,106,.08); border: 1px solid rgba(240,106,106,.25); }
+    #statusMsg.hidden { opacity: 0; pointer-events: none; }
+
+    /* ── Misc ─────────────────────────────────────────────────────────── */
+    .hidden { display: none !important; }
+    .error-msg { color: var(--error); font-size: 0.85rem; margin-top: 8px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: 0.88rem; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════ LOGIN ══════════════════════ -->
+<div id="loginSection">
+  <div class="login-card">
+    <h2>Panel de administración</h2>
+    <p class="sub">Acceso restringido al equipo de desarrollo.</p>
+    <div class="form-group">
+      <label for="adminPwd">Contraseña</label>
+      <input type="password" id="adminPwd" placeholder="Introduce la contraseña…" style="width:100%;" autocomplete="current-password">
+    </div>
+    <button id="loginBtn" class="primary" style="width:100%;">Acceder</button>
+    <p id="loginErr" class="error-msg hidden">Contraseña incorrecta.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════ PANEL ══════════════════════ -->
+<div id="adminPanel" class="admin-wrap hidden">
+
+  <div class="admin-topbar">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <a href="index.html" class="btn secondary">← Volver</a>
+      <h1>Panel de administración</h1>
+    </div>
+    <div class="topbar-right">
+      <span id="statusMsg" class="hidden"></span>
+      <button id="saveBtn" class="primary">Guardar cambios</button>
+    </div>
+  </div>
+
+  <!-- ── Rutas ejecutables ── -->
+  <div class="admin-section">
+    <h2>Rutas ejecutables</h2>
+    <div class="exe-grid" id="exeGrid"><!-- JS --></div>
+  </div>
+
+  <!-- ── Tipos de fichero ── -->
+  <div class="admin-section">
+    <h2>Tipos de fichero por herramienta</h2>
+    <div id="typesContainer"><!-- JS --></div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  Configuración
+// ═══════════════════════════════════════════════════════════
+const PWD      = 'devtools2024';
+const ASHX_URL = 'admin.ashx';
+
+const EXE_TOOLS = [
+  { key: 'espana',                 label: 'ReportGenerator — España' },
+  { key: 'portugal',               label: 'ReportGenerator — Portugal (JAR)' },
+  { key: 'colombia',               label: 'ReportGenerator — Colombia' },
+  { key: 'reportanalyzer_spain',   label: 'ReportAnalyzer — España' },
+  { key: 'reportanalyzer_portugal',label: 'ReportAnalyzer — Portugal' },
+  { key: 'dwhloader',              label: 'DWHLoader — Colombia' },
+  { key: 'icsmonthlyreports',      label: 'IcsMonthlyReports' },
+  { key: 'migrationchecker',       label: 'MigrationChecker' },
+  { key: 'pde',                    label: 'PasDataExtractor' },
+];
+
+// Herramientas con tipos agrupados por periodicidad
+const PERIO_TOOLS = [
+  { key: 'espana',   label: 'ReportGenerator — España',   periods: ['Diario','Horario','Mensual'] },
+  { key: 'portugal', label: 'ReportGenerator — Portugal', periods: ['Diario','Horario'] },
+  { key: 'colombia', label: 'ReportGenerator — Colombia', periods: ['Diario','Horario','Mensual'] },
+];
+
+// Herramientas con lista plana de tipos
+const FLAT_TOOLS = [
+  { key: 'reportanalyzer_spain', label: 'ReportAnalyzer — España' },
+  { key: 'dwhloader',            label: 'DWHLoader — Colombia' },
+  { key: 'icsmonthlyreports',    label: 'IcsMonthlyReports' },
+];
+
+// ═══════════════════════════════════════════════════════════
+//  Estado
+// ═══════════════════════════════════════════════════════════
+let cfg = null;
+
+// ═══════════════════════════════════════════════════════════
+//  Login
+// ═══════════════════════════════════════════════════════════
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+document.getElementById('adminPwd').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+async function doLogin() {
+  const entered = document.getElementById('adminPwd').value;
+  if (entered !== PWD) {
+    document.getElementById('loginErr').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('loginErr').classList.add('hidden');
+
+  try {
+    const res = await fetch(`${ASHX_URL}?action=get&pwd=${encodeURIComponent(PWD)}`);
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      throw new Error(d.error || `HTTP ${res.status}`);
+    }
+    cfg = await res.json();
+    renderPanel();
+  } catch (err) {
+    const el = document.getElementById('loginErr');
+    el.textContent = `Error al cargar la config: ${err.message}`;
+    el.classList.remove('hidden');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Render principal
+// ═══════════════════════════════════════════════════════════
+function renderPanel() {
+  document.getElementById('loginSection').classList.add('hidden');
+  document.getElementById('adminPanel').classList.remove('hidden');
+  renderExeGrid();
+  renderTypes();
+}
+
+// ─── Rutas ejecutables ────────────────────────────────────
+function renderExeGrid() {
+  const grid = document.getElementById('exeGrid');
+  grid.innerHTML = EXE_TOOLS.map(t => `
+    <div class="exe-row">
+      <label>${esc(t.label)}</label>
+      <input type="text" data-exe="${esc(t.key)}"
+             value="${esc(cfg.executables?.[t.key] ?? '')}"
+             spellcheck="false">
+    </div>`).join('');
+}
+
+// ─── Tipos de fichero ─────────────────────────────────────
+function renderTypes() {
+  const container = document.getElementById('typesContainer');
+  let html = '';
+
+  // Con periodicidades
+  for (const tool of PERIO_TOOLS) {
+    const toolTypes = cfg.fileTypes?.[tool.key] ?? {};
+    html += `<div class="tool-block"><h3>${esc(tool.label)}</h3>`;
+    for (const period of tool.periods) {
+      const tags = Array.isArray(toolTypes[period]) ? toolTypes[period] : [];
+      html += `
+        <div class="perio-row">
+          <div class="perio-label">${esc(period)}</div>
+          <div>
+            <div class="tag-editor"
+                 data-tool="${esc(tool.key)}"
+                 data-period="${esc(period)}">${renderTags(tags)}</div>
+            <div class="tag-add-row">
+              <input type="text" placeholder="Nuevo tipo…">
+              <button type="button" class="btn-add btn secondary">+&nbsp;Añadir</button>
+            </div>
+          </div>
+        </div>`;
+    }
+    html += `</div>`;
+  }
+
+  // Lista plana
+  for (const tool of FLAT_TOOLS) {
+    const tags = Array.isArray(cfg.fileTypes?.[tool.key]) ? cfg.fileTypes[tool.key] : [];
+    html += `
+      <div class="tool-block">
+        <h3>${esc(tool.label)}</h3>
+        <div class="tag-editor" data-tool="${esc(tool.key)}">${renderTags(tags)}</div>
+        <div class="tag-add-row">
+          <input type="text" placeholder="Nuevo tipo…">
+          <button type="button" class="btn-add btn secondary">+&nbsp;Añadir</button>
+        </div>
+      </div>`;
+  }
+
+  // PDE (grupos de prioridad)
+  html += `
+    <div class="tool-block">
+      <h3>PasDataExtractor — Módulos (por prioridad)</h3>
+      <p class="muted" style="font-size:0.82rem;margin:0 0 14px;">
+        Cada bloque es una prioridad. Dentro de un bloque todos los módulos tienen igual prioridad.
+      </p>
+      <div id="pdeEditor">${renderPdeGroups(cfg.fileTypes?.pde ?? [])}</div>
+      <button type="button" id="btnAddGroup" class="btn secondary"
+              style="margin-top:10px;font-size:0.82rem;">+ Añadir grupo</button>
+    </div>`;
+
+  container.innerHTML = html;
+  bindTypeEvents();
+}
+
+function renderTags(tags) {
+  return tags.map(t => `
+    <span class="tag">
+      <span>${esc(t)}</span>
+      <button type="button" class="tag-x" title="Eliminar">&times;</button>
+    </span>`).join('');
+}
+
+function renderPdeGroups(groups) {
+  return groups.map((group, idx) => renderPdeGroup(group, idx)).join('');
+}
+
+function renderPdeGroup(group, idx) {
+  return `
+    <div class="pde-group" data-gidx="${idx}">
+      <div class="pde-group-lbl">Prioridad ${idx + 1}</div>
+      <div class="tag-editor" data-pde-group="${idx}">${renderTags(group)}</div>
+      <div class="tag-add-row">
+        <input type="text" placeholder="Nuevo módulo…">
+        <button type="button" class="btn-add btn secondary">+&nbsp;Añadir</button>
+        ${idx > 0
+          ? `<button type="button" class="btn-remove-group">Eliminar grupo</button>`
+          : ''}
+      </div>
+    </div>`;
+}
+
+// ─── Bind events ─────────────────────────────────────────
+function bindTypeEvents() {
+  const container = document.getElementById('typesContainer');
+
+  // Eliminar tag
+  container.addEventListener('click', e => {
+    if (e.target.classList.contains('tag-x')) {
+      e.target.closest('.tag').remove();
+    }
+  });
+
+  // Añadir tag (botón)
+  container.addEventListener('click', e => {
+    if (!e.target.classList.contains('btn-add')) return;
+    const row    = e.target.closest('.tag-add-row');
+    const input  = row.querySelector('input');
+    const editor = row.previousElementSibling;
+    if (editor && editor.classList.contains('tag-editor')) addTag(editor, input);
+  });
+
+  // Añadir tag (Enter)
+  container.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const input = e.target;
+    if (!input.closest('.tag-add-row')) return;
+    e.preventDefault();
+    const row    = input.closest('.tag-add-row');
+    const editor = row.previousElementSibling;
+    if (editor && editor.classList.contains('tag-editor')) addTag(editor, input);
+  });
+
+  // PDE: eliminar grupo
+  container.addEventListener('click', e => {
+    if (!e.target.classList.contains('btn-remove-group')) return;
+    e.target.closest('.pde-group').remove();
+    reindexPde();
+  });
+
+  // PDE: añadir grupo
+  const btnAddGroup = document.getElementById('btnAddGroup');
+  if (btnAddGroup) {
+    btnAddGroup.addEventListener('click', () => {
+      const pdeEd  = document.getElementById('pdeEditor');
+      const newIdx = pdeEd.querySelectorAll('.pde-group').length;
+      const div    = document.createElement('div');
+      div.innerHTML = renderPdeGroup([], newIdx);
+      pdeEd.appendChild(div.firstElementChild);
+    });
+  }
+}
+
+function addTag(editor, input) {
+  const val = input.value.trim();
+  if (!val) return;
+  // evitar duplicados
+  const existing = Array.from(editor.querySelectorAll('.tag span:first-child')).map(s => s.textContent);
+  if (existing.includes(val)) { input.select(); return; }
+  const span = document.createElement('span');
+  span.className = 'tag';
+  span.innerHTML = `<span>${esc(val)}</span><button type="button" class="tag-x" title="Eliminar">&times;</button>`;
+  editor.appendChild(span);
+  input.value = '';
+  input.focus();
+}
+
+function reindexPde() {
+  document.querySelectorAll('#pdeEditor .pde-group').forEach((g, idx) => {
+    g.dataset.gidx = idx;
+    g.querySelector('.pde-group-lbl').textContent = `Prioridad ${idx + 1}`;
+    const te = g.querySelector('.tag-editor');
+    if (te) te.dataset.pdeGroup = idx;
+    const rb = g.querySelector('.btn-remove-group');
+    if (rb) rb.style.display = idx === 0 ? 'none' : '';
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Recoger config del DOM
+// ═══════════════════════════════════════════════════════════
+function collectConfig() {
+  // Deep clone para no mutar el estado actual
+  const out = JSON.parse(JSON.stringify(cfg));
+
+  // Ejecutables
+  document.querySelectorAll('[data-exe]').forEach(input => {
+    out.executables[input.dataset.exe] = input.value.trim();
+  });
+
+  // Tipos con periodicidad
+  for (const tool of PERIO_TOOLS) {
+    out.fileTypes[tool.key] = {};
+    for (const period of tool.periods) {
+      const ed = document.querySelector(`.tag-editor[data-tool="${tool.key}"][data-period="${period}"]`);
+      out.fileTypes[tool.key][period] = ed ? getTagValues(ed) : [];
+    }
+  }
+
+  // Tipos lista plana
+  for (const tool of FLAT_TOOLS) {
+    const ed = document.querySelector(`.tag-editor[data-tool="${tool.key}"]`);
+    out.fileTypes[tool.key] = ed ? getTagValues(ed) : [];
+  }
+
+  // PDE
+  const pdeEditor = document.getElementById('pdeEditor');
+  if (pdeEditor) {
+    out.fileTypes.pde = Array.from(
+      pdeEditor.querySelectorAll('.tag-editor')
+    ).map(ed => getTagValues(ed));
+  }
+
+  return out;
+}
+
+function getTagValues(editor) {
+  return Array.from(editor.querySelectorAll('.tag span:first-child')).map(s => s.textContent);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Guardar
+// ═══════════════════════════════════════════════════════════
+document.getElementById('saveBtn')?.addEventListener('click', doSave);
+
+async function doSave() {
+  const newCfg = collectConfig();
+
+  try {
+    const res = await fetch(`${ASHX_URL}?action=set&pwd=${encodeURIComponent(PWD)}`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body:    JSON.stringify(newCfg, null, 2),
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (data.ok) {
+      cfg = newCfg; // actualizar estado local
+      showStatus('Cambios guardados correctamente.', false);
+    } else {
+      showStatus(`Error: ${data.error || 'desconocido'}`, true);
+    }
+  } catch (err) {
+    showStatus(`Error de red: ${err.message}`, true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Utilidades
+// ═══════════════════════════════════════════════════════════
+function showStatus(msg, isError) {
+  const el = document.getElementById('statusMsg');
+  el.textContent  = msg;
+  el.className    = isError ? 'err' : 'ok';
+  el.classList.remove('hidden');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.add('hidden'), 5000);
+}
+
+function esc(s) {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>

@@ -55,6 +55,16 @@
       </div>
     </section>
   </main>
+
+  <!-- Botón de acceso al panel de desarrollo (discreto, esquina inferior izquierda) -->
+  <a href="admin.html"
+     style="position:fixed;bottom:14px;left:14px;font-size:11px;color:var(--accent);
+            text-decoration:none;padding:3px 10px;border:1px solid var(--accent);
+            border-radius:4px;opacity:0.55;transition:opacity .2s,box-shadow .2s;
+            background:var(--bg);z-index:999;"
+     onmouseover="this.style.opacity='1';this.style.boxShadow='0 0 8px var(--accent-glow)'"
+     onmouseout="this.style.opacity='.55';this.style.boxShadow='none'"
+     title="Panel de administración">Herramientas de desarrollo</a>
 </body>
 
 </html>

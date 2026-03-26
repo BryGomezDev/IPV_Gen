@@ -6,6 +6,7 @@
     const fin = document.querySelector('#fin');
     const tzSelect = document.querySelector('#tz');
     const exe = document.querySelector('#exe');
+    if (window.IPV_CONFIG?.executables?.pde && exe) exe.value = window.IPV_CONFIG.executables.pde;
     const DEFAULT_EXE = exe ? exe.value : "";
     const out = document.querySelector('#output');
     const generateBtn = document.querySelector('#btnGenerate');
@@ -32,8 +33,24 @@
     //  Configuración de módulos
     // -------------------------------
 
-    const MODULE_GROUPS = [
-        ['User', 'Tournament'],
+    // Los grupos pueden sobreescribirse desde config.json via el panel de administración.
+    const MODULE_GROUPS = (function () {
+        const cfgGroups = window.IPV_CONFIG?.fileTypes?.pde;
+        if (Array.isArray(cfgGroups) && cfgGroups.length > 0) {
+            // Reconstruir el modal con los grupos del servidor
+            const grid = document.querySelector('.modules-grid');
+            if (grid) {
+                grid.innerHTML = cfgGroups.map(function (group, idx) {
+                    const labels = group.map(function (m) {
+                        return '<label><input type="checkbox" name="modules" value="' + m + '"> ' + m + '</label>';
+                    }).join('');
+                    return '<fieldset class="modules-group"><legend>Prioridad ' + (idx + 1) + '</legend>' + labels + '</fieldset>';
+                }).join('');
+            }
+            return cfgGroups;
+        }
+        return [
+            ['User', 'Tournament'],
         [
             'Alias',
             'LoginHistory',            // (Colombia)
@@ -73,7 +90,8 @@
             'AutoExclusionExpired',
             'RoundsDetails'
         ]
-    ];
+        ];
+    }());
 
     const MODULE_PRIORITY = (() => {
         const map = {};

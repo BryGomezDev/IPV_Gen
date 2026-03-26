@@ -9,10 +9,14 @@ Guía práctica para modificar la aplicación sin dependencia externa. Cada secc
 ```
 IPV_CommandWeb/
 ├── index.html                          ← Página de inicio (índice de herramientas)
+├── admin.html                          ← Panel de administración (acceso con contraseña)
+├── admin.ashx                          ← Handler .NET — lee/escribe config.json (requiere IIS)
+├── config.json                         ← Configuración servidor: rutas y tipos de fichero
 ├── assets/
 │   ├── css/main.css                    ← Todos los estilos
 │   ├── js/
 │   │   ├── utils.js                    ← Funciones compartidas (no tocar salvo ampliación)
+│   │   ├── config-loader.js            ← Carga config.json antes de que arranquen las herramientas
 │   │   ├── index.js                    ← Lógica del índice (búsqueda, último usado)
 │   │   ├── espana.js                   ← Lógica ReportGenerator España
 │   │   ├── portugal.js                 ← Lógica ReportGenerator Portugal
@@ -40,9 +44,50 @@ IPV_CommandWeb/
 
 ---
 
+## Panel de administración (Release 3.0+)
+
+Desde la Release 3.0 existe un **panel de administración** que permite modificar rutas de ejecutables y tipos de fichero de forma permanente en el servidor, **sin tocar código**.
+
+### Acceso
+
+Haz clic en el botón **"Herramientas de desarrollo"** (esquina inferior izquierda del índice) o navega directamente a `admin.html`.
+
+- **Contraseña:** `devtools2024`
+  _(Cámbiala en `admin.ashx` línea `PASSWORD` y en `admin.html` variable `PWD` — ambos deben coincidir)_
+
+### Qué puede configurarse desde el panel
+
+| Sección | Herramientas cubiertas |
+|---|---|
+| Rutas ejecutables | Todas (9 herramientas) |
+| Tipos de fichero por periodicidad | ReportGenerator España / Portugal / Colombia |
+| Tipos de fichero (lista plana) | ReportAnalyzer España, DWHLoader, IcsMonthlyReports |
+| Módulos por grupo de prioridad | PasDataExtractor |
+
+### Prioridad de configuración
+
+```
+localStorage del usuario  >  config.json (servidor)  >  valor hardcodeado en HTML
+```
+
+- El panel escribe en `config.json` → todos los usuarios que no hayan personalizado su ruta verán el nuevo valor automáticamente.
+- El botón `↩` de cada herramienta restaura al valor de `config.json`, no al hardcodeado en HTML.
+
+### Permisos IIS necesarios
+
+El proceso de IIS necesita permiso de escritura sobre `config.json`:
+
+```
+icacls config.json /grant "IIS_IUSRS:(W)"
+```
+
+---
+
 ## 1. Añadir un tipo de fichero (checkbox) al DWHLoader
 
-Los tipos del DWHLoader son checkboxes definidos directamente en el HTML.
+> **Forma recomendada (Release 3.0+):** usa el panel de administración (`admin.html`) — no requiere tocar código.
+
+Si prefieres hacerlo manualmente o necesitas un cambio permanente en el código base:
 
 **Fichero:** `herramientas/DWHLoader/dwhloader.html`
 
@@ -62,7 +107,9 @@ El valor de `value` es exactamente lo que se insertará en el comando generado (
 
 ## 2. Añadir un tipo de fichero al ReportAnalyzer (España o Portugal)
 
-Igual que el DWHLoader, los tipos son checkboxes en el HTML.
+> **Forma recomendada (Release 3.0+):** usa el panel de administración (`admin.html`).
+
+Si prefieres hacerlo manualmente:
 
 **Ficheros:**
 - España: `herramientas/ReportAnalyzer/reportanalyzerspain.html`
@@ -80,6 +127,10 @@ El valor se pasa al flag `--type=` del comando.
 
 ## 3. Añadir un tipo de fichero al IcsMonthlyReports
 
+> **Forma recomendada (Release 3.0+):** usa el panel de administración (`admin.html`).
+
+Si prefieres hacerlo manualmente:
+
 **Fichero:** `herramientas/ICSMonthlyReports/icsmonthlyreports.html`
 
 Busca `<div id="tipoMenu" class="ms-menu">` y añade:
@@ -94,44 +145,38 @@ El valor se pasa al flag `-r` del comando.
 
 ## 4. Añadir o quitar un tipo al ReportGenerator (España / Portugal / Colombia)
 
-En el ReportGenerator los tipos NO están en el HTML, sino en una constante del JS que los asigna por periodicidad.
+> **Forma recomendada (Release 3.0+):** usa el panel de administración (`admin.html`) — edita directamente las listas por periodicidad sin tocar JS.
+
+Si prefieres hacerlo en código:
 
 **Ficheros JS:**
 - España: `assets/js/espana.js`
 - Portugal: `assets/js/portugal.js`
 - Colombia: `assets/js/colombia.js`
 
-Al principio de cada fichero hay una constante `TIPOS`:
+Al principio de cada fichero hay una constante `TIPOS` (actúa como fallback si `config.json` no tiene valores):
 
 ```js
-// espana.js — ejemplo actual
-const TIPOS = {
+// espana.js — fallback hardcodeado
+const TIPOS = window.IPV_CONFIG?.fileTypes?.espana || {
     Diario:  ["CJT", "CJD", "RUD"],
     Horario: ["JUC"],
     Mensual: ["CJT", "CJD", "RUT", "RUD", "OPT", "BOT"],
 };
 ```
 
-Para añadir un tipo, simplemente agrega el string al array de la periodicidad que corresponda:
-
-```js
-const TIPOS = {
-    Diario:  ["CJT", "CJD", "RUD", "NUE"],  // añadido NUE a Diario
-    Horario: ["JUC"],
-    Mensual: ["CJT", "CJD", "RUT", "RUD", "OPT", "BOT"],
-};
-```
+Edita el objeto del fallback para cambiar los defaults del código.
 
 ### Tipos de GameType (solo Horario/Mensual en España)
 
-Si el tipo nuevo lleva un GameType asociado, también hay dos arrays justo debajo:
+Si el tipo nuevo lleva un GameType asociado, también hay dos arrays justo debajo en `espana.js`:
 
 ```js
 const GAME_HORARIO = ["SES", "RAC"];                  // GameTypes para Horario + JUC
 const GAME_MENSUAL = ["AZA", "RLT", "BLJ", "AOC"];   // GameTypes para Mensual + OPT | BOT
 ```
 
-Añade el GameType nuevo al array que corresponda.
+Añade el GameType nuevo al array que corresponda. _(Los GameTypes no son configurables desde el panel — requieren edición de código.)_
 
 ---
 
@@ -373,7 +418,11 @@ O, si es una herramienta específica de un país, añade el enlace dentro de la 
 
 ## 8. Cambiar la ruta del ejecutable por defecto
 
-La ruta que aparece al abrir la herramienta por primera vez (antes de que el usuario la cambie) está en el atributo `value` del campo `#exe` dentro del HTML de cada herramienta.
+> **Forma recomendada (Release 3.0+):** usa el panel de administración (`admin.html`), sección **"Rutas ejecutables"**. El cambio se persiste en `config.json` y todos los usuarios que no hayan personalizado su ruta lo verán en la próxima carga.
+
+Si prefieres hacerlo en el código base (como fallback hardcodeado):
+
+La ruta fallback está en el atributo `value` del campo `#exe` dentro del HTML de cada herramienta.
 
 **Ejemplo** — `herramientas/ReportAnalyzer/reportanalyzerspain.html`:
 
@@ -381,9 +430,8 @@ La ruta que aparece al abrir la herramienta por primera vez (antes de que el usu
 <input id="exe" type="text" value="C:\services\services_ics\ReportAnalyzer\DGOJReportAnalyzer.exe" />
 ```
 
-Cambia ese `value`. Si el usuario ya modificó la ruta en su navegador, puede restaurar la original pulsando el botón `↩` que hay junto al campo.
-
-> Si quieres que todos los usuarios vean la nueva ruta aunque ya la tengan guardada, también tendrás que cambiar el `value` del HTML (la lógica de restauración siempre lee el `value` original del HTML).
+> **Prioridad de carga:** `localStorage` del usuario → `config.json` → `value` del HTML.
+> El botón `↩` restaura al valor de `config.json` (o al `value` del HTML si `config.json` no tiene entrada para esa herramienta).
 
 ---
 
@@ -407,29 +455,31 @@ Cada herramienta tiene su propio patrón. Localiza la función de construcción 
 
 ## Referencia rápida: qué fichero toca cada cambio
 
-| Cambio | Fichero(s) a modificar |
-|---|---|
-| Añadir tipo DWHLoader | `herramientas/DWHLoader/dwhloader.html` |
-| Añadir tipo ReportAnalyzer | `herramientas/ReportAnalyzer/reportanalyzerspain.html` o `reportanalyzerportugal.html` |
-| Añadir tipo IcsMonthlyReports | `herramientas/ICSMonthlyReports/icsmonthlyreports.html` |
-| Añadir tipo ReportGenerator | `assets/js/espana.js` / `portugal.js` / `colombia.js` (constante `TIPOS`) |
-| Añadir legislación IcsMonthlyReports | `icsmonthlyreports.html` (option) + `assets/js/icsmonthlyreports.js` (`LEGISLATION_CONFIG`) |
-| Renombrar herramienta | HTML de la herramienta + `index.html` + (opcional) claves en el JS |
-| Cambiar ruta ejecutable por defecto | HTML de la herramienta (atributo `value` del `#exe`) |
-| Cambiar formato del comando | JS de la herramienta (función `buildOutputText` o `buildCommands`) |
-| Nueva herramienta | Nueva carpeta + nuevo HTML + nuevo JS + entrada en `index.html` |
-| Añadir módulo PasDataExtractor | `assets/js/pde.js` (array `MODULE_GROUPS`) |
+| Cambio | Método recomendado | Alternativa en código |
+|---|---|---|
+| Añadir/quitar tipo DWHLoader | Panel admin → Tipos de fichero | `herramientas/DWHLoader/dwhloader.html` |
+| Añadir/quitar tipo ReportAnalyzer | Panel admin → Tipos de fichero | `reportanalyzerspain.html` o `reportanalyzerportugal.html` |
+| Añadir/quitar tipo IcsMonthlyReports | Panel admin → Tipos de fichero | `herramientas/ICSMonthlyReports/icsmonthlyreports.html` |
+| Añadir/quitar tipo ReportGenerator | Panel admin → Tipos de fichero | `assets/js/espana.js` / `portugal.js` / `colombia.js` (fallback `TIPOS`) |
+| Cambiar ruta ejecutable por defecto | Panel admin → Rutas ejecutables | HTML de la herramienta (atributo `value` del `#exe`) |
+| Añadir/quitar módulo PasDataExtractor | Panel admin → Módulos PDE | `assets/js/pde.js` (array `MODULE_GROUPS`) |
+| Añadir legislación IcsMonthlyReports | Solo en código | `icsmonthlyreports.html` (option) + `icsmonthlyreports.js` (`LEGISLATION_CONFIG`) |
+| Añadir GameType España/Colombia | Solo en código | `assets/js/espana.js` / `colombia.js` (`GAME_HORARIO`, `GAME_MENSUAL`) |
+| Renombrar herramienta | Solo en código | HTML + `index.html` + (opcional) claves en JS |
+| Cambiar formato del comando | Solo en código | JS de la herramienta (`buildOutputText` o `buildCommands`) |
+| Nueva herramienta | Solo en código | Nueva carpeta + HTML + JS + entrada en `index.html` |
 
-### Módulos del PasDataExtractor
+### Módulos del PasDataExtractor (fallback en código)
 
-Los módulos del PDE se definen en `assets/js/pde.js` en el array `MODULE_GROUPS`. Cada sub-array es un grupo de prioridad (el orden determina en qué secuencia se generan los comandos):
+Si el panel de admin no está disponible, los módulos del PDE se definen en `assets/js/pde.js`. Cada sub-array es un grupo de prioridad:
 
 ```js
-const MODULE_GROUPS = [
+// Fallback hardcodeado (se usa si config.json no tiene valores para 'pde')
+return [
     ['User', 'Tournament'],
     ['Alias', 'LoginHistory', ...],
     // ...
 ];
 ```
 
-Para añadir un módulo nuevo, agrégalo al sub-array del grupo de prioridad que corresponda, o crea un nuevo sub-array al final para el grupo de menor prioridad.
+Para añadir un módulo nuevo en código, agrégalo al sub-array del grupo de prioridad que corresponda.

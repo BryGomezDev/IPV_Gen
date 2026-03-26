@@ -1,4 +1,4 @@
-const INFO_VERSION = "Release 2.2";
+const INFO_VERSION = "Release 3.0";
 
 const showInfoPopupOnce = () => {
     const key = `seen-info-${INFO_VERSION}`;
