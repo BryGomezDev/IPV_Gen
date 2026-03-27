@@ -124,16 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    btnCopy.addEventListener("click", async () => {
-        if (!output.value.trim()) return;
-        try {
-            await navigator.clipboard.writeText(output.value);
-            copyMsg.style.display = "inline";
-            setTimeout(() => (copyMsg.style.display = "none"), 1500);
-        } catch {
-            showToast("No se pudo copiar al portapapeles.");
-        }
-    });
+    btnCopy.addEventListener("click", () => copyToClipboard(output, copyMsg));
 
     const btnExport = document.getElementById("btnExport");
     if (btnExport) btnExport.addEventListener("click", () => {
