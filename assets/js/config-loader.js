@@ -8,16 +8,8 @@
  */
 (function () {
     try {
-        // Calcular la ruta relativa a la raíz según la profundidad del pathname.
-        // Ejemplos:
-        //   /index.html                                    → depth 0 → prefix ''
-        //   /herramientas/DWHLoader/dwhloader.html         → depth 2 → prefix '../../'
-        var slashes = (window.location.pathname.match(/\//g) || []).length;
-        var depth   = Math.max(0, slashes - 1);
-        var prefix  = depth > 0 ? new Array(depth + 1).join('../') : '';
-
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', prefix + 'config.json', false); // false = síncrono
+        xhr.open('GET', '/IPV_CommandWeb/config.json', false); // false = síncrono
         xhr.send(null);
 
         if (xhr.status === 200 && xhr.responseText) {
