@@ -153,7 +153,7 @@ fieldset {
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--t-slow);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   margin: 0;
 }
 
