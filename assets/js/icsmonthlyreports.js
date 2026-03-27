@@ -24,6 +24,7 @@ const quarter = $("#quarter");
 const yearSel = $("#year");
 const formato = $("#comillas");
 const out = $("#output");
+const copyMsg = $("#copyMsg");
 const counter = $("#counter");
 const tipoBtn = $("#tipoBtn");
 const tipoMenu = $("#tipoMenu");
@@ -174,25 +175,7 @@ const generate = () => {
     }
 };
 
-const copyOutput = async () => {
-    try {
-        if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(out.value);
-        } else {
-            out.select();
-            document.execCommand("copy");
-        }
-        // FIX: null check antes de acceder a .style
-        const msg = $("#copyMsg");
-        if (msg) {
-            msg.style.display = "inline";
-            setTimeout(() => (msg.style.display = "none"), 2000);
-        }
-    } catch {
-        out.select();
-        document.execCommand("copy");
-    }
-};
+const copyOutput = () => copyToClipboard(out, copyMsg);
 
 // Custom: checkboxes
 function getTipoCheckboxes() {

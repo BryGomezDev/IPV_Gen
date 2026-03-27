@@ -32,6 +32,7 @@ const inicio = $("#inicio");        // fecha inicio (type=date)
 const fin = $("#fin");           // fecha fin (type=date)
 const formato = $("#comillas");      // formato salida ('comando', ... / raw)
 const out = $("#output");        // textarea salida
+const copyMsg = $("#copyMsg");
 
 // Selector de modos de salida (opcional): flat | grouped | ps | bash
 const modeSel = $("#mode");          // puede no existir
@@ -325,25 +326,7 @@ const generate = () => {
 };
 
 
-async function copyOutput() {
-    try {
-        if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(out.value);
-        } else {
-            out.select();
-            document.execCommand("copy");
-        }
-        // FIX: usar el helper $ y añadir null check antes de acceder a .style
-        const msg = $("#copyMsg");
-        if (msg) {
-            msg.style.display = "inline";
-            setTimeout(() => (msg.style.display = "none"), 2000);
-        }
-    } catch {
-        out.select();
-        document.execCommand("copy");
-    }
-}
+const copyOutput = () => copyToClipboard(out, copyMsg);
 
 // ===== Listeners =====
 btnGenerate?.addEventListener("click", generate);

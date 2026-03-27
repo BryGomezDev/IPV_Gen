@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const formato      = $("#comillas");
     const filename     = $("#filename");
     const out          = $("#output");
+    const copyMsg      = $("#copyMsg");
 
     const btnGenerate  = $("#btnGenerate");
     const btnCopy      = $("#btnCopy");
@@ -177,24 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===== Acciones de botones =====
-    const copyOutput = async () => {
-        try {
-            if (navigator.clipboard?.writeText) {
-                await navigator.clipboard.writeText(out.value);
-            } else {
-                out.select();
-                document.execCommand("copy");
-            }
-            const msg = $("#copyMsg");
-            if (msg) {
-                msg.style.display = "inline";
-                setTimeout(() => { msg.style.display = "none"; }, 2000);
-            }
-        } catch {
-            out.select();
-            document.execCommand("copy");
-        }
-    };
+    const copyOutput = () => copyToClipboard(out, copyMsg);
 
     btnGenerate.addEventListener("click", generate);
     btnCopy.addEventListener("click", copyOutput);

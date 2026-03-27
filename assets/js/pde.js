@@ -315,24 +315,6 @@
     // -------------------------------
     //  Copiar y limpiar salida
     // -------------------------------
-    async function copyOutput() {
-        if (!out) return;
-        try {
-            if (navigator.clipboard?.writeText) {
-                await navigator.clipboard.writeText(out.value);
-            } else {
-                out.select();
-                document.execCommand("copy");
-            }
-            if (copyMsg) {
-                copyMsg.style.display = "inline";
-                setTimeout(() => copyMsg.style.display = "none", 2000);
-            }
-        } catch {
-            out.select();
-            document.execCommand("copy");
-        }
-    }
 
 
     // -------------------------------
@@ -386,7 +368,7 @@
     if (copyBtn) {
         copyBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            copyOutput();
+            copyToClipboard(out, copyMsg);
         });
     }
 

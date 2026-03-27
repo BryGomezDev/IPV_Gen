@@ -183,6 +183,41 @@ function initToolTracking() {
 }
 
 /**
+ * Copia el contenido del textarea de salida al portapapeles.
+ * Usa navigator.clipboard cuando está disponible; en HTTP usa el fallback
+ * con display:block temporal + removeAttribute('readonly') + execCommand.
+ * @param {HTMLTextAreaElement} outputEl  - Textarea cuyo valor se copiará.
+ * @param {HTMLElement}         copyMsgEl - Elemento de confirmación (puede ser null).
+ */
+async function copyToClipboard(outputEl, copyMsgEl) {
+    if (!outputEl) return;
+    const showConfirm = () => {
+        if (copyMsgEl) {
+            copyMsgEl.style.display = 'inline';
+            setTimeout(() => { copyMsgEl.style.display = 'none'; }, 2000);
+        }
+    };
+    const fallbackCopy = () => {
+        const prevDisplay = outputEl.style.display;
+        outputEl.style.display = 'block';
+        outputEl.removeAttribute('readonly');
+        outputEl.select();
+        document.execCommand('copy');
+        outputEl.style.display = prevDisplay;
+    };
+    try {
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(outputEl.value);
+        } else {
+            fallbackCopy();
+        }
+        showConfirm();
+    } catch {
+        fallbackCopy();
+    }
+}
+
+/**
  * Devuelve un separador de bloque con la hora actual.
  * Reemplaza el \n# ---\n estático para facilitar la navegación del output.
  */
